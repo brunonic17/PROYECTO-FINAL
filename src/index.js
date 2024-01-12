@@ -2,30 +2,41 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors'; 
 
+
 import dotenv from 'dotenv';
 dotenv.config(); 
 
-// import './database/database';
+import connect from './database/database';
 
-// import { routerProducts } from './routes/productsRoutes.js'; 
-
-const app = express();
-
-const APP_PORT=process.env.APP_PORT;
-
-// app.use(morgan('dev'));
-// app.use(cors());
-// app.use(express.json());
-
-// app.use(routerProducts);
-
-app.listen( APP_PORT, () => {
-    console.log(`Servidor ejecutándose en puerto
-    ${APP_PORT}`)
-    app.get('/',async (req,res)=>{
-      res.status(200).send({status:"OK", data:"sistema iniciado"})
-    })
-});
+import  routerModel  from './routes/modelRoutes.js'; 
 
 
+
+const APP_PORT=5000;
+
+
+
+try {
+
+  connect();
+
+  const app = express();
+
+  app.listen(APP_PORT, () => {
+      console.log(`Backend iniciado en puerto ${APP_PORT}, conectado a bbdd`)
+  })
+
+  app.use(cors({
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+      optionsSuccessStatus: 204
+  }))
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  app.use( '/api' ,routerModel );
+} catch(err) {
+  console.log(`ERROR al inicializar backend: ${err.message}`)
+}
 
