@@ -2,7 +2,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { router } from "../routes/auth.routes.js";
+import authRouters from "../routes/auth.routes.js";
 
 
 export const app = express();
@@ -19,5 +19,5 @@ app.use(
 );
 app.use(cookieParser());
 
-app.use("/api", router);
+app.use("/api", authRouters);
 
