@@ -5,10 +5,10 @@ import Users from "../models/user.models.js"
 export const register = async (req, res) => {
 
     try {
-        const {name, email, password} = req.body
+        const {nameUser, email, password} = req.body
         const passwordHash = await Hash(password)
         const newUser = new Users ({
-            name,
+            nameUser,
             email,
             password: passwordHash
         })
@@ -17,7 +17,7 @@ export const register = async (req, res) => {
 
         res.status(200).json({messaje: "registrado existosamnete", data: {
             id: userSaved._id,
-            name: userSaved.name,
+            nameUser: userSaved.nameUser,
             email: userSaved.email
         } })
     } catch (error) {
