@@ -1,6 +1,6 @@
 import mongoose, { Collection, Schema } from "mongoose";
 
-mongoose.pluralize (null);
+mongoose.pluralize(null);
 
 const CollectionShoppings = "Shoppings";
 
@@ -9,8 +9,8 @@ const SchemaShoppings = new mongoose.Schema ({
     IdUsuCarro : {type:"String", required: true},
     FechaCarro : {type: "Date", required: true},
     TotalCarro : {type: "String"},
-    TipoPagoCarro : {type: "String"},
+    TipoPagoCarro : {type: "String", enum: ['Transferencia', 'Tarjeta', 'Mercado Pago'], default: 'Transferencia'},
     DetalleCarro : {type: "Array"},
 })
 
-export default mongoose.model(Collection, Schema)
+export default mongoose.model(CollectionShoppings, Schema)

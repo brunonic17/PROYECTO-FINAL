@@ -1,17 +1,18 @@
 import express from 'express';
-import morgan from 'morgan';
-import cors from 'cors'; 
+import shoppingRouter from './routes/shoppingRoutes.js'
+//import morgan from 'morgan';
+//import cors from 'cors'; 
 
-import dotenv from 'dotenv';
-dotenv.config(); 
+//import dotenv from 'dotenv';
+//dotenv.config(); 
 
 // import './database/database';
 
 // import { routerProducts } from './routes/productsRoutes.js'; 
 
-const app = express();
 
-const APP_PORT=process.env.APP_PORT;
+
+const APP_PORT=5050;
 
 // app.use(morgan('dev'));
 // app.use(cors());
@@ -19,13 +20,17 @@ const APP_PORT=process.env.APP_PORT;
 
 // app.use(routerProducts);
 
-app.listen( APP_PORT, () => {
-    console.log(`Servidor ejecutándose en puerto
-    ${APP_PORT}`)
-    app.get('/',async (req,res)=>{
-      res.status(200).send({status:"OK", data:"sistema iniciado"})
-    })
-});
+try {
+  const app = express();
+
+  app.listen(APP_PORT, () => {
+    console.log(`Servidor ejecutándose en puerto ${APP_PORT}`)
+})
+  app.use('/api/shopping', shoppingRouter)
+
+} catch(err) {
+  console.log(`Error al Inicializar Backend ${err.message}`)
+}
 
 
 
