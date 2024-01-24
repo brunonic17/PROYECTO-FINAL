@@ -1,4 +1,4 @@
-import Product from '../models/ProductModel.js';
+import SchemaPoduct from '../models/ProductModel.js';
 
 
 // Endpoint para obtener productos
@@ -13,17 +13,32 @@ import Product from '../models/ProductModel.js';
 // Endpoint para Crear productos
 async function CreateProducts(req,res){
     try{
-        const { NameProduct,CodigoPduct,Rubro,Detalle,Talles,Precio,FechaAlta,Stock}= req.body;
-        const NewProduct= await ProductScheme.create({
-            NameProduct,
-            CodigoPduct,
-            Rubro,
-            Detalle,
-            Talles,
-            Precio,
-            FechaAlta,
-            Stock
+        const { IdProduct,NombreProducto,Precio,Detalle,Talle,UltimoPrecio,FechaAlta,Stock,Color,CodProdVenta}= req.body;
+       
+        const SpecificColor= await SchemaPoduct.Especificaciones.Especificaciones.create({
+            Talle,
+            Stock,
+            FechaAlta
         });
+
+        const SpecificProduct= await SchemaPoduct.Especificaciones.create({
+            Color,
+            CodProdVenta,
+            UrlImage,
+            SpecificColor
+        })
+
+        const NewProduct= await SchemaPoduct.create({
+            IdProduct,
+            NombreProducto,
+            Precio,
+            Detalle,
+            UltimoPrecio,
+            SpecificProduct
+            
+        });
+
+
 
         if(NewProduct){
         res
@@ -38,18 +53,31 @@ async function CreateProducts(req,res){
 // Endpoint para Actualizar productos
 async function UpdateProducts(req,res){
     try{
-        const { NameProduct,CodigoPduct,Rubro,Detalle,Talles,Precio,FechaAlta,Stock}= req.body;
+        const { IdProduct,NombreProducto,Precio,Detalle,Talle,UltimoPrecio,FechaAlta,Stock,Color,CodProdVenta}= req.body;
+        
         const _id = req.params;
 
-        const UpdateProduct= await ProductScheme.findByIdAndUpdate(id,{
-            NameProduct,
-            CodigoPduct,
-            Rubro,
-            Detalle,
-            Talles,
+        const SpecificColor= await SchemaPoduct.Especificaciones.Especificaciones.findByIdAndUpdate(_id,{
+            Talle,
+            Stock,
+            FechaAlta
+        });
+
+        const SpecificProduct= await SchemaPoduct.Especificaciones.findByIdAndUpdate(_id,{
+            Color,
+            CodProdVenta,
+            UrlImage,
+            SpecificColor
+        })
+
+        const UpdateProduct= await SchemaPoduct.findByIdAndUpdate(_id,{
+            IdProduct,
+            NombreProducto,
             Precio,
-            FechaAlta,
-            Stock
+            Detalle,
+            UltimoPrecio,
+            SpecificProduct
+            
         });
 
        if(UpdateProduct){
