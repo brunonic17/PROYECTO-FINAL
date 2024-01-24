@@ -1,4 +1,5 @@
 import SchemaPoduct from '../models/ProductModel.js';
+import UploadPicture from './CloudinaryProductController.js';
 
 
 // Endpoint para obtener productos
@@ -24,7 +25,6 @@ async function CreateProducts(req,res){
         const SpecificProduct= await SchemaPoduct.Especificaciones.create({
             Color,
             CodProdVenta,
-            UrlImage,
             SpecificColor
         })
 
@@ -49,6 +49,30 @@ async function CreateProducts(req,res){
     }
 }
 
+// Endpoint para subir la imagen
+async function UpdatePicture(req, res) {
+    try {
+      const { payload } = req;
+  
+      const { _id } = payload;
+  
+      const { secure_url } = await UploadPicture(req.files.file[0]);
+      console.log(secure_url);
+      const response = await SchemaPoduct.Especificaciones.findByIdAndUpdate(_id, {
+        UrlImage: secure_url,
+      });
+  
+      res.status(200).json({
+        ok: true,
+        data: response,
+      });
+    } catch (ex) {
+      return res.status(400).json({
+        ok: false,
+        err: ex.message,
+      });
+    }
+  }
 
 // Endpoint para Actualizar productos
 async function UpdateProducts(req,res){
@@ -108,4 +132,5 @@ async function UpdateProducts(req,res){
  export {GetProducts,
          CreateProducts,
          UpdateProducts,
-         DeleteProduct} 
+         DeleteProduct,
+         UpdatePicture} 
