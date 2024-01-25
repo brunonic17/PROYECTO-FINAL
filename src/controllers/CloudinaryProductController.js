@@ -1,10 +1,10 @@
 import {v2 as cloudinary} from 'cloudinary';
 
 
-const cloudinary = cloud.v2;
+const Cloudinary = cloudinary;
 
-function configCloudinary(cloud_name, api_key, api_secret) {
-  cloudinary.config({
+function ConfigCloudinary(cloud_name, api_key, api_secret) {
+  Cloudinary.config({
     cloud_name,
     api_key,
     api_secret,
@@ -28,5 +28,5 @@ async function UploadPicture(file) {
 
 export{
   UploadPicture,
-  configCloudinary,
+  ConfigCloudinary,
 };

@@ -1,18 +1,20 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors'; 
-
+import { ConfigCloudinary } from './controllers/CloudinaryProductController.js';
 
 import dotenv from 'dotenv';
 dotenv.config(); 
 
 import connect from './database/database';
 
-import  routerModel  from './routes/modelRoutes.js'; 
+import  AdminRoutes  from './routes/AdminRoutes.js'; 
 
 
 
 const APP_PORT=5000;
+
+ConfigCloudinary('dvrushrqw','497118466574166','icqxE9_gaxrCJzyNHRxQiJN9wRc');
 
 
 
@@ -35,7 +37,7 @@ try {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.use( '/api' ,AdminRoutes.js );
+  app.use( '/api' ,AdminRoutes );
 } catch(err) {
   console.log(`ERROR al inicializar backend: ${err.message}`)
 }
