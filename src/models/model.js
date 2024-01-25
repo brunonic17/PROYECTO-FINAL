@@ -10,6 +10,9 @@ const SchemaShoppings = new mongoose.Schema ({
     FechaCarro : {type: "Date", required: true},
     TotalCarro : {type: "String"},
     TipoPagoCarro : {type: "String", enum: ['Transferencia', 'Tarjeta', 'Mercado Pago'], default: 'Transferencia'},
+    DetalleCarro : [{   IdArtCarro : {type: "Number"},
+                        DescArtCarro : {type: "string"},
+    }]
     
 })
 
