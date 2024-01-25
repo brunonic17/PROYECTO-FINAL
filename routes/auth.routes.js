@@ -15,7 +15,9 @@ router.post("/register",validatorAuth , register);
 
 
 
+
 router.post("/login", login)
 
 export default router
 
+ 
