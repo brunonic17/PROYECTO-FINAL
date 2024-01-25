@@ -1,30 +1,22 @@
 import express from 'express';
 import shoppingRouter from './routes/shoppingRoutes.js'
-//import morgan from 'morgan';
-//import cors from 'cors'; 
-
-//import dotenv from 'dotenv';
-//dotenv.config(); 
-
-// import './database/database';
-
-// import { routerProducts } from './routes/productsRoutes.js'; 
+import mongoose from 'mongoose';
 
 
 
 const APP_PORT=5050;
 
-// app.use(morgan('dev'));
-// app.use(cors());
-// app.use(express.json());
+//const MONGODB_URL = 'mongodb+srv://adminyocampo:yocampo@cluster0.bxsnzji.mongodb.net/YoCampo'
 
-// app.use(routerProducts);
+const MONGODB_URL = 'mongodb+srv://adminyocampo:yocampo@cluster0.bxsnzji.mongodb.net/YoCampo'
 
 try {
+  await mongoose.connect(MONGODB_URL)
+
   const app = express();
 
   app.listen(APP_PORT, () => {
-    console.log(`Servidor ejecutándose en puerto ${APP_PORT}`)
+    console.log(`Servidor ejecutándose en puerto ${APP_PORT}, conectado a bbdd`)
 })
   app.use('/api/shopping', shoppingRouter)
 
