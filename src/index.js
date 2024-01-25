@@ -35,7 +35,9 @@ try {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.use( '/api' ,routerModel );
+  app.use( '/' ,routerModel );
+
+
 } catch(err) {
   console.log(`ERROR al inicializar backend: ${err.message}`)
 }
