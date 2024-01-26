@@ -9,9 +9,13 @@ const SchemaShoppings = new mongoose.Schema ({
     IdUsuCarro : {type:"String", required: true},
     FechaCarro : {type: "Date", required: true},
     TotalCarro : {type: "String"},
-    TipoPagoCarro : {type: "String", enum: ['Transferencia', 'Tarjeta', 'Mercado Pago'], default: 'Transferencia'},
+    TipoPagoCarro : {type: "String", enum: ['Pendiente','Transferencia', 'Tarjeta', 'Mercado Pago'], default: 'Pendiente'},
     DetalleCarro : [{   IdArtCarro : {type: "Number"},
                         DescArtCarro : {type: "string"},
+                        TalleCarro : {type: "Number"},
+                        PcioCarro : {type: "Number"},
+                        CantCarro : {type: "Number"},
+                        ParcialCarro : {type: "Number"}
     }]
     
 })
