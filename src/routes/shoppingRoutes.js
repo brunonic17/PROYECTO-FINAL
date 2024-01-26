@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import shoppingModel from '../models/model.js'
+import shoppingModel from '../models/shopping.models.js'
 
 const router = Router()
 
