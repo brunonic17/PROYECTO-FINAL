@@ -14,19 +14,9 @@ import UploadPicture from './CloudinaryProductController.js';
 // Endpoint para Crear productos
 async function CreateProducts(req,res){
     try{
-        const { IdProduct,NombreProducto,Precio,Detalle,Talle,UltimoPrecio,FechaAlta,Stock,Color,CodProdVenta}= req.body;
+        const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria}= req.body;
        
-        const SpecificColor= await SchemaPoduct.Especificaciones.Especificaciones.create({
-            Talle,
-            Stock,
-            FechaAlta
-        });
-
-        const SpecificProduct= await SchemaPoduct.Especificaciones.create({
-            Color,
-            CodProdVenta,
-            SpecificColor
-        })
+            
 
         const NewProduct= await SchemaPoduct.create({
             IdProduct,
@@ -34,8 +24,7 @@ async function CreateProducts(req,res){
             Precio,
             Detalle,
             UltimoPrecio,
-            SpecificProduct
-            
+            Categoria           
         });
 
 
@@ -48,6 +37,68 @@ async function CreateProducts(req,res){
         res.status(500).send({ status: 'ERR', data: err.message });
     }
 }
+
+// Endpoint para Caragr especificaciones
+async function UpdateEspecificaciones(req, res) {
+    try {
+      
+  
+      const { _id,
+         Colorb,
+        CodProdVentab,
+         } = req.body;
+     
+      const response = await SchemaPoduct.findById(_id);
+      console.log(response)
+      response.Especificaciones.push({Color: Colorb,
+                           CodProdVenta: CodProdVentab})      
+    await response.save()
+  
+      res.status(200).json({
+        ok: true,
+        data: "listo",
+      });
+    } catch (ex) {
+      return res.status(400).json({
+        ok: false,
+        err: ex.message,
+      });
+    }
+  }
+
+  // Endpoint para Caragr especificacionesC
+async function UpdateEspecificacionesC(req, res) {
+    try {
+      
+     
+      const { _id,
+        Talleb,
+        Stockb,
+        FechaAltab,
+        CodProdVentab
+         } = req.body;
+     
+      const response = await SchemaPoduct.Especificaciones.EspecificacionesC.findByIdAndUpdate(_id, {
+        Color: Colorb,
+        CodProdVenta: CodProdVentab,
+        FecahAlta:FechaAltab ,
+        Talle:Talleb ,
+        Stock:Stockb
+      });
+  
+      res.status(200).json({
+        ok: true,
+        data: response,
+      });
+    } catch (ex) {
+      return res.status(400).json({
+        ok: false,
+        err: ex.message,
+      });
+    }
+  }
+
+
 
 // Endpoint para subir la imagen
 async function UpdatePicture(req, res) {
@@ -133,4 +184,6 @@ async function UpdateProducts(req,res){
          CreateProducts,
          UpdateProducts,
          DeleteProduct,
-         UpdatePicture} 
+         UpdatePicture,
+         UpdateEspecificaciones,
+         UpdateEspecificacionesC} 
