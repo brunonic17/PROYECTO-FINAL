@@ -1,17 +1,17 @@
-// import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
-// import dotenv from "dotenv"
-// dotenv.config();
+//mongoose.set("strictQuery", true);
 
-// const mongoUri = process.env.MONGO_URI;
-// mongoose.set('strictQuery', true);
-// mongoose
-//  .connect(mongoUri, {
-//  useNewUrlParser: true,
-//  })
-//  .then(() => {
-//  console.log('DB conectada');
-//  })
-//  .catch((err) => {
-// console.log('ERROR: ' + err);
-//  }) ;
+function connect() {
+  mongoose
+    //.connect ("mongodb+srv://bscistri:keHeDuhBv8MikkAQ@models.rin05k5.mongodb.net/Models")
+    .connect ("mongodb+srv://adminyocampo:yocampo@cluster0.bxsnzji.mongodb.net/YoCampo")
+    .then((res) =>
+      console.log("Conectado correctamente a la base de datos de mongoose")
+    )
+    .catch((err) => console.log(err, "Error de Conexion con la DDBB"));
+}
+
+
+
+export default connect
