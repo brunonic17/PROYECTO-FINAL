@@ -5,7 +5,7 @@ import UploadPicture from './CloudinaryProductController.js';
 // Endpoint para obtener productos
  async function GetProducts(req,res){
     try{
-        res.status(200).send({ status: 'OK', data: await Product.find() });
+        res.status(200).send({ status: 'OK', data: await SchemaPoduct.find() });
     }catch(err){
         res.status(500).send({ status: 'ERR', data: err.message });
     }
@@ -14,7 +14,7 @@ import UploadPicture from './CloudinaryProductController.js';
 // Endpoint para Crear productos
 async function CreateProducts(req,res){
     try{
-        const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria}= req.body;
+        const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria,Colorb}= req.body;
        
             
 
@@ -24,8 +24,14 @@ async function CreateProducts(req,res){
             Precio,
             Detalle,
             UltimoPrecio,
-            Categoria           
+            Categoria,
+            Especificaciones:[]
+                     
         });
+
+        NewProduct.Especificaciones.push({Color:Colorb})
+
+         await NewProduct.save()
 
 
 
@@ -48,20 +54,20 @@ async function UpdateEspecificaciones(req, res) {
          } = req.body;
      
       const response = await SchemaPoduct.findById(_id);
+
+      //  response.create(
+      //   {Especificaciones:[]}
+      // )
       
       response.Especificaciones.push({Color: Colorb,
                                       })      ;
     await response.save();
   
-    // const response = await SchemaPoduct.findByIdAndUpdate(_id, 
-    //   {
-    //    Especificaciones:{  Color: Colorb}
-      
-    // });
+   
 
-    res.status(200).json({
+    res.status(200).send({
       ok: true,
-      data: "Listo",
+      data: response
     });
   } catch (ex) {
     return res.status(400).json({

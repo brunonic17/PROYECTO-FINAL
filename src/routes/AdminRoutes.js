@@ -19,7 +19,7 @@ const upload = multer({
 router.get('/Admin',GetProducts);
 router.post('/Admin',CreateProducts);
 router.post('/Admin', upload,UpdatePicture);
-router.post('/Admin/Especificaciones', UpdateEspecificaciones);
+router.put('/Admin/Especificaciones', UpdateEspecificaciones);
 router.post('/Admin/EspecificacionesC', UpdateEspecificacionesC);
 router.put("/Admin/:id",UpdateProducts);
 router.delete("/Admin/:id",DeleteProduct);
