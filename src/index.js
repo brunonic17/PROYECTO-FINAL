@@ -9,6 +9,7 @@ dotenv.config();
 import connect from './database/database';
 
 import  routerModel  from './routes/modelRoutes.js'; 
+import  routeComment  from './routes/commentsRoutes.js'; 
 
 
 
@@ -36,6 +37,7 @@ try {
   app.use(express.urlencoded({ extended: true }));
 
   app.use( '/api' ,routerModel );
+  app.use('/api' , routeComment)
 } catch(err) {
   console.log(`ERROR al inicializar backend: ${err.message}`)
 }

@@ -9,4 +9,6 @@ async function getComments(req,res){
     }
 }
 
+
+
 export default getComments 
