@@ -8,7 +8,7 @@ const SchemaShoppings = new mongoose.Schema ({
   
  
     //IdCarro : {type:"String", required: true},
-    IdUsu : {type:"String"},
+    IdUsu : {type:"String"}
     // FechaCarro : {type: "Date", required: true},
     //TotalCarro : {type: "Number"},
     // TipoPagoCarro : {type: "String", enum: ['Pendiente','Transferencia', 'Tarjeta', 'Mercado Pago'], default: 'Pendiente'},
