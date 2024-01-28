@@ -45,27 +45,31 @@ async function UpdateEspecificaciones(req, res) {
   
       const { _id,
          Colorb,
-        CodProdVentab,
          } = req.body;
      
       const response = await SchemaPoduct.findById(_id);
-      console.log(response)
+      
       response.Especificaciones.push({Color: Colorb,
-                           CodProdVenta: CodProdVentab})      
-    await response.save()
+                                      })      ;
+    await response.save();
   
-      res.status(200).json({
-        ok: true,
-        data: "listo",
-      });
-    } catch (ex) {
-      return res.status(400).json({
-        ok: false,
-        err: ex.message,
-      });
-    }
-  }
+    // const response = await SchemaPoduct.findByIdAndUpdate(_id, 
+    //   {
+    //    Especificaciones:{  Color: Colorb}
+      
+    // });
 
+    res.status(200).json({
+      ok: true,
+      data: "Listo",
+    });
+  } catch (ex) {
+    return res.status(400).json({
+      ok: false,
+      err: ex.message,
+    });
+  }
+}
   // Endpoint para Caragr especificacionesC
 async function UpdateEspecificacionesC(req, res) {
     try {
