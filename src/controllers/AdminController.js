@@ -4,8 +4,12 @@ import UploadPicture from './CloudinaryProductController.js';
 
 // Endpoint para obtener productos
  async function GetProducts(req,res){
+
+
     try{
-        res.status(200).send({ status: 'OK', data: await SchemaPoduct.find() });
+const {Id}= req.body
+
+        res.status(200).send({ status: 'OK', data: await SchemaPoduct.Especificaciones.find(Id) });
     }catch(err){
         res.status(500).send({ status: 'ERR', data: err.message });
     }
@@ -14,7 +18,7 @@ import UploadPicture from './CloudinaryProductController.js';
 // Endpoint para Crear productos
 async function CreateProducts(req,res){
     try{
-        const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria,Colorb}= req.body;
+        const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria,}= req.body;
        
             
 
@@ -29,7 +33,8 @@ async function CreateProducts(req,res){
                      
         });
 
-        NewProduct.Especificaciones.push({Color:Colorb})
+        NewProduct.Especificaciones.push({EspecificacionesC:[{Talle:0}]})
+       
 
          await NewProduct.save()
 
