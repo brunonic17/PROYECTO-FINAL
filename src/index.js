@@ -21,6 +21,7 @@ try {
   connect();
 
   const app = express();
+  
 
   app.listen(APP_PORT, () => {
       console.log(`Backend iniciado en puerto ${APP_PORT}, conectado a bbdd`)
