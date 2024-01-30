@@ -7,9 +7,14 @@ import UploadPicture from './CloudinaryProductController.js';
 
 
     try{
-const {Id}= req.body
+const {Id}= req.body;
+const {IdE}=req.body;
 
-        res.status(200).send({ status: 'OK', data: await SchemaPoduct.Especificaciones.find(Id) });
+
+
+
+        // res.status(200).send({ status: 'OK', data: await SchemaPoduct.find({_id:Id},{Especificaciones:[{_id:IdE}]})}) ;
+        res.status(200).send({ status: 'OK', data: await SchemaPoduct.findOne({Especificaciones:[{_id:IdE}]})})
     }catch(err){
         res.status(500).send({ status: 'ERR', data: err.message });
     }
@@ -18,7 +23,7 @@ const {Id}= req.body
 // Endpoint para Crear productos
 async function CreateProducts(req,res){
     try{
-        const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria,}= req.body;
+        const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria}= req.body;
        
             
 
@@ -52,24 +57,16 @@ async function CreateProducts(req,res){
 // Endpoint para Caragr especificaciones
 async function UpdateEspecificaciones(req, res) {
     try {
-      
-  
       const { _id,
          Colorb,
          } = req.body;
      
       const response = await SchemaPoduct.findById(_id);
 
-      //  response.create(
-      //   {Especificaciones:[]}
-      // )
-      
-      response.Especificaciones.push({Color: Colorb,
-                                      })      ;
+      response.Especificaciones.push({Color: Colorb });
     await response.save();
   
    
-
     res.status(200).send({
       ok: true,
       data: response
@@ -81,7 +78,36 @@ async function UpdateEspecificaciones(req, res) {
     });
   }
 }
-  // Endpoint para Caragr especificacionesC
+
+//Endpoint para Modificar ESpecificaciones
+
+async function ModifyEspecificaciones(req, res) {
+  try {
+    const { Id,
+         IdE,  
+         Colorb,
+         } = req.body;
+
+        //  const query=;
+   
+    const response = await SchemaPoduct.findOneAndUpdate({_id:Id},{Especificaciones:[{_id:Id}]},{Color: Colorb });
+
+    // response.ESpecificaciones.setUpdate();
+  await response.save();
+
+ 
+  res.status(200).send({
+    ok: true,
+    data: response
+  });
+} catch (ex) {
+  return res.status(400).json({
+    ok: false,
+    err: ex.message,
+  });
+}
+}
+  // Endpoint para Cargar especificacionesC
 async function UpdateEspecificacionesC(req, res) {
     try {
       
@@ -124,9 +150,12 @@ async function UpdatePicture(req, res) {
   
       const { secure_url } = await UploadPicture(req.files.file[0]);
       console.log(secure_url);
-      const response = await SchemaPoduct.Especificaciones.findByIdAndUpdate(_id, {
-        UrlImage: secure_url,
-      });
+      const response =  await SchemaPoduct.find({_id:Id},{Especificaciones:[{_id:IdE}]});
+       response.Especificaciones.update({UrlImage: secure_url});
+
+       await response.save()
+       
+    
   
       res.status(200).json({
         ok: true,
@@ -201,4 +230,5 @@ async function UpdateProducts(req,res){
          DeleteProduct,
          UpdatePicture,
          UpdateEspecificaciones,
-         UpdateEspecificacionesC} 
+         UpdateEspecificacionesC,
+        ModifyEspecificaciones} 
