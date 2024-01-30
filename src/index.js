@@ -8,8 +8,9 @@ dotenv.config();
 
 import connect from './database/database';
 
-import  routerModel  from './routes/modelRoutes.js'; 
 import  routeComment  from './routes/commentsRoutes.js'; 
+import AdminRoutes from './routes/AdminRoutes.js'
+import ProductsRoute from './routes/ProductsRoutes.js'
 
 
 
@@ -36,8 +37,11 @@ try {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.use( '/api' ,routerModel );
-  app.use('/api' , routeComment)
+
+  app.use('/api' , routeComment);
+  app.use( '/api' ,AdminRoutes );
+  app.use('/api' , ProductsRoute)
+  
 } catch(err) {
   console.log(`ERROR al inicializar backend: ${err.message}`)
 }
