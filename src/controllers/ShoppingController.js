@@ -3,7 +3,15 @@ import Shoppings from "../models/shopping.models.js";
 
 async function GetProduct(req,res){
   try{
-      res.status(200).send({ status: 'OK', data: await Shoppings.find() });
+      const {IdUsu}  = req.body;
+      const Carro = await Shoppings.findOne({IdUsu:IdUsu});
+
+      if (Carro) {
+        res.status(200).send({ status: 'OK', data: Carro });
+      } else {
+        res.status(500).send({ status: 'ERR', data: "No Existe Carrito para este Usuario"  });
+      }
+
   }catch(err){
       res.status(500).send({ status: 'ERR', data: err.message });
   }
@@ -11,28 +19,33 @@ async function GetProduct(req,res){
 
 async function PostProduct(req,res) {
 try{
-  const {IdCarro, IdUsu, FechaCarro, TotalCarro, TipoPagoCarro, IdArtCarro, DescArtCarro, TalleCarro, PcioCarro, CantCarro, ParcialCarro } = req.body;
-
+  const {IdUsu, IdProduct,  CodProdVenta, NombreProducto, Color, Precio, CantProduct, Talle, FechaCarro, TipoPagoCarro} = req.body;
+  
   const newCarrito = await Shoppings.create({
-    IdCarro,
-    IdUsu,
-    FechaCarro,
-    TotalCarro,
-    TipoPagoCarro,
-    DetalleCarrito: []
-    });
+          IdUsu,
+          FechaCarro,
+          TotalCarro:Precio*CantProduct,
+          TipoPagoCarro,
+          DetalleCarrito: []
+          });
+   
+        newCarrito.DetalleCarro.push({
+                              IdArtCarro : IdProduct,
+                              IdProdCarro: CodProdVenta,
+                              DescArtCarro : NombreProducto,
+                              ColorCarro: Color,
+                              TalleCarro : Talle,
+                              PcioCarro : Precio,
+                              CantCarro : CantProduct,
+                              ParcialCarro : Precio*CantProduct} );
+        
+                              
+        //const Total= newCarrito.DetalleCarro.ParcialCarro                      
+        //newCarrito.populate ({TotalCarro: Total})
+      
+        await newCarrito.save()
 
-  newCarrito.DetalleCarro.push({
-                         IdArtCarro : IdArtCarro,
-                        DescArtCarro : DescArtCarro,
-                        TalleCarro : TalleCarro,
-                        PcioCarro : PcioCarro,
-                        CantCarro : CantCarro,
-                        ParcialCarro : ParcialCarro} ); 
-
-  await newCarrito.save()
-
-  return res.status(200).json({
+        return res.status(200).json({
     ok: true,
     data: newCarrito,
   });
