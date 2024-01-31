@@ -11,6 +11,7 @@ const SchemaShoppings = new mongoose.Schema ({
     TipoPagoCarro : {type: "String", enum: ['Pendiente','Transferencia', 'Tarjeta', 'Mercado Pago'], default: 'Pendiente'},
     DetalleCarro : [{   IdArtCarro : {type: "Number"},
                         IdProdCarro: {type: "Number"},
+                        ImgCarro: {Type: "String"},
                         DescArtCarro : {type: "String"},
                         TalleCarro : {type: "Number"},
                         ColorCarro: {type: "String"},
