@@ -82,11 +82,10 @@ async function PutProduct(req, res) {
 
     if (Carro) {
       //res.status(200).send({ status: "OK", data: Carro });
-      const newCarrito = await Shoppings.create({
-        DetalleCarrito: [],
-      });
+      const DetalleCarrito = [] ;
+      var i = Shoppings.DetalleCarro.length
   
-      newCarrito.DetalleCarro.push({
+      DetalleCarrito.push({
         IdArtCarro: IdProduct,
         IdProdCarro: CodProdVenta,
         DescArtCarro: NombreProducto,
