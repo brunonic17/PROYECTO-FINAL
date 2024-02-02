@@ -82,21 +82,20 @@ async function PutProduct(req, res) {
 
     if (Carro) {
       //res.status(200).send({ status: "OK", data: Carro });
-      const DetalleCarrito = [] ;
-      var i = Shoppings.DetalleCarro.length
+      //const DetalleCarrito = [] ;
+      //var i = Shoppings.DetalleCarro.length
   
-      DetalleCarrito.push({
-        IdArtCarro: IdProduct,
-        IdProdCarro: CodProdVenta,
-        DescArtCarro: NombreProducto,
-        ImgCarro: UrlImage,
-        ColorCarro: Color,
-        TalleCarro: Talle,
-        PcioCarro: Precio,
-        CantCarro: CantProduct,
-        ParcialCarro: Precio * CantProduct,
-      });
-      await newCarrito.save();
+      await db.Shoppings.update({ "IdUsu" : IdUsu},
+                        { $addToSet:
+                        { "DetalleCarro" :
+                        { $each: [{"IdArtCarro": IdProduct,
+                          "IdProdCarro": CodProdVenta,
+                          "DescArtCarro": NombreProducto}]
+                        }
+                        }
+                        }
+                        );
+      //await newCarrito.save();
 
       return res.status(200).json({
         ok: true,
