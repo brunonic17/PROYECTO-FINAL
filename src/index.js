@@ -1,7 +1,8 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors'; 
-import { ConfigCloudinary } from './controllers/CloudinaryProductController.js';
+
+
 
 import dotenv from 'dotenv';
 dotenv.config(); 
@@ -10,18 +11,23 @@ import connect from './database/database';
 
 import  AdminRoutes  from './routes/AdminRoutes.js'; 
 
+import { ConectCloudinary } from './controllers/CloudinaryProductController.js';
+
+const APP_PORT=3002;
 
 
-const APP_PORT=3000;
-
-ConfigCloudinary('dvrushrqw','497118466574166','icqxE9_gaxrCJzyNHRxQiJN9wRc');
 
 
 
 try {
 
-  connect();
 
+  connect();
+  
+  
+   
+ ConectCloudinary('dvrushrqw','497118466574166','icqxE9_gaxrCJzyNHRxQiJN9wRc')
+  
   const app = express();
 
   app.listen(APP_PORT, () => {

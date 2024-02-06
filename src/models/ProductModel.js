@@ -14,16 +14,8 @@ const SchemaPoduct = new mongoose.Schema({
     UltimoPrecio: { type:'number', default:'0' },
     Detalle: { type: 'String', required: true },
     Categoria:{ type: 'String', required: true },
-    Especificaciones: [({ Color:{ type: 'String', default:"white" },
-                          UrlImag:{ type: "String",default: "sin imagen" },
-                          EspecificacionesC: [({Talle:{ type: 'String', default:'0' },
-                                           Stock:{ type: 'number', default:'0' },
-                                           CodProdVenta:{ type: 'number',default:'0' },
-                                           FechaAlta:{ type: 'Date', default:1-1-2024 }
-                                       })]
-        
-    })]
-});
+    
+    });
 
 
 

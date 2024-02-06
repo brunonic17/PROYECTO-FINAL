@@ -1,32 +1,22 @@
 import {v2 as cloudinary} from 'cloudinary';
 
+function ConectCloudinary (CloudN,ApiK,ApiS){      
+ cloudinary.config({ 
+    cloud_name:CloudN,
+    api_key:ApiK,  
+    api_secret:ApiS
+  })}
 
-const Cloudinary = cloudinary;
 
-function ConfigCloudinary(cloud_name, api_key, api_secret) {
-  Cloudinary.config({
-    cloud_name,
-    api_key,
-    api_secret,
-  });
-}
+   function UploadPicture(req,res){
+        const {path}=req
 
-//ubicación relativa
-async function UploadPicture(file) {
-  try {
-    const { path } = file;
-
-    const res = await cloudinary.uploader.upload(path, {
-      resource_type: "image",
-    });
-
-    return res;
-  } catch (ex) {
-    console.log(ex);
+        const result= cloudinary.uploader.upload(path,{
+             resource_type: "image",
+           });
+   
+    return result
   }
-}
 
-export{
-  UploadPicture,
-  ConfigCloudinary,
-};
+  export{UploadPicture,
+ConectCloudinary};
