@@ -1,5 +1,7 @@
 import Shoppings from "../models/shopping.models.js";
 let tot = 0
+
+//BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA
 async function GetProduct(req, res) {
   try {
     const { IdUsu } = req.body;
@@ -17,6 +19,7 @@ async function GetProduct(req, res) {
   }
 }
 
+//CREA UN CARRITO DE CERO PARA UN USUARIO, PONIENDO EL PRIMER ARTICULO QUE HAYA SELECCIONADO
 async function PostProduct(req, res) {
   try {
     const {IdUsu, IdProduct, CodProdVenta, NombreProducto, UrlImage, Color, Precio, CantProduct, Talle, FechaCarro,
@@ -51,6 +54,7 @@ async function PostProduct(req, res) {
   }
 }
 
+//PARA AGREGAR ARTICULOS AL CARRITO EXISTENTE DE UN USUARIO
 async function PatchProduct(req, res) {
   try {
     const {
@@ -68,7 +72,6 @@ async function PatchProduct(req, res) {
     const Carro = await Shoppings.findOne({ IdUsu: IdUsu });
 
     if (Carro) {
-      tot = await Shoppings.TotalCarro;
       const Carrito = await Shoppings.findOneAndUpdate({IdUsu: IdUsu }, {TotalCarro: tot + (Precio * CantProduct)})
       res.status(200).send({ status: "OK", data: Carrito });
 
