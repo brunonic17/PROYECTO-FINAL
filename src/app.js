@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import authRouters from "../routes/auth.routes.js";
 import "dotenv/config.js";
 import bodyParser from "body-parser";
+import AdminRouters from "../routes/adminRuotes.js";
 
 export const app = express();
 
@@ -21,3 +22,4 @@ app.use(express.urlencoded({ extended: true })); //Esta es una función de middl
 app.use(cookieParser());
 
 app.use("/api", authRouters);
+app.use("/api", AdminRouters);

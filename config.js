@@ -10,6 +10,6 @@ export const configEnv = {
     host: process.env.DB_MONGODB,
   },
 };
-export const salt = { passwordSalt: process.env.BCRYPT_SALT };
+export const salt = 10 ;
 
-export const tokenSecret = process.env.TOKEN_SECRET;
+export const tokenSecret =  process.env.TOKEN_SECRET;
