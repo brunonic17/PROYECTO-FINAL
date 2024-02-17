@@ -20,6 +20,7 @@ app.use(
 );
 app.use(express.urlencoded({ extended: true })); //Esta es una función de middleware incorporada en Express. Analiza las solicitudes entrantes. con cargas útiles codificadas en URL y se basa en body-parser .
 app.use(cookieParser());
+//hola mundo
 
 app.use("/api", authRouters);
 app.use("/api", AdminRouters);
