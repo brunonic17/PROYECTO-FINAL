@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(express.json()); //para la aplicación de análisis sintáctico /json
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     optionsSuccessStatus: 204,
