@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import shoppingRouter from './routes/shoppingRoutes.js'
 import connect from './database/database.js';
 import bodyParser from 'body-parser';
