@@ -1,106 +1,39 @@
-import SchemaPoduct from '../models/ProductModel.js';
-import SchemaEspecificaciones from '../models/EspecificacionesModel.js';
-import SchemaEspecificacionesC from '../models/EspecificacionesCModel.js';
+import SchemaProduct1 from '../models/ProductModel1.js';
+
 import { UploadPicture } from './CloudinaryProductController.js';
 
 // Endpoint para obtener productos completo
  async function GetCompleteProducts(req,res){
 
     try{
-const {NombreProducto,Color,Talleb}= req.body;
-
-const Data=  await SchemaPoduct.find({NombreProducto:NombreProducto});
-
-const DataEpecificaciones= await SchemaEspecificaciones.find({Ident:NombreProducto,Color:Color});
-
-const DataEpecificacionesC= await SchemaEspecificacionesC.find({Ident:NombreProducto,Color:Color});
-
-DataEpecificaciones.push({EspecificacionesC:DataEpecificacionesC});
-Data.push({Especificaciones:DataEpecificaciones});
 
 
-// const Array= data.Especificaciones
-// const data2=Array.findIndex({_id:IdE})
-// const data=  await SchemaPoduct.findOne({Especificaciones:[{_id:IdE}]})
+const Data=  await SchemaProduct1.find();
 
- // Busca todos los productos en
-        // res.status(200).send({ status: 'OK', data:data2 })
-        // res.status(200).send({ status: 'OK', data: await SchemaPoduct.find({_id:Id},{Especificaciones:[{_id:IdE}]})})  
-        // res.status(200).send({ status: 'OK', data: await SchemaPoduct.findOne({Especificaciones:[{_id:IdE}]})})
         res.status(200).send({ status: 'OK', data:Data})
     }catch(err){
         res.status(500).send({ status: 'ERR', data: err.message });
     }
 }
 
-// Endpoint para obtener producto
-async function GetProducts(req,res){
-
-  try{
-const {NombreProducto}= req.body;
-
-const Data=  await SchemaPoduct.find({NombreProducto:NombreProducto});
-
-
-      res.status(200).send({ status: 'OK', data:Data})
-  }catch(err){
-      res.status(500).send({ status: 'ERR', data: err.message });
-  }
-}
-
-// Endpoint para obtener Especificaciones
-async function GetEspecificaciones(req,res){
-
-  try{
-const {NombreProducto,Color}= req.body;
-
-const DataEpecificaciones= await SchemaEspecificaciones.find({Ident:NombreProducto,Color:Color});
-
-const DataEpecificacionesC= await SchemaEspecificacionesC.find({Ident:NombreProducto,IdentColor:Color});
-
-DataEpecificaciones.push({EspecificacionesC:DataEpecificacionesC});
-
-
-
-
-      res.status(200).send({ status: 'OK', data:DataEpecificaciones})
-  }catch(err){
-      res.status(500).send({ status: 'ERR', data: err.message });
-  }
-}
-
-// Endpoint para obtener EspecificacionesC
-async function GetEspecificacionesC(req,res){
-
-  try{
-const {NombreProducto,Color}= req.body;
-
-
-const DataEpecificacionesC= await SchemaEspecificacionesC.find({Ident:NombreProducto,IdentColor:Color});
-
-      res.status(200).send({ status: 'OK', data:DataEpecificacionesC})
-  }catch(err){
-      res.status(500).send({ status: 'ERR', data: err.message });
-  }
-}
-
 // Endpoint para Crear productos
 async function CreateProducts(req,res){
     try{
-        const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria}= req.body;
+        const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria,Especificaciones}= req.body;
        
-            
+       
 
-        const NewProduct= await SchemaPoduct.create({
+        const NewProduct= await SchemaProduct1.create({
             IdProduct,
             NombreProducto,
             Precio,
             Detalle,
             UltimoPrecio,
             Categoria,
-            
-                     
+            Especificaciones
         });
+
+        
 
         if(NewProduct){
         res
@@ -112,23 +45,20 @@ async function CreateProducts(req,res){
 }
 
 // Endpoint para Crear Especificaciones
-async function CreateEspecificaciones(req,res){
+async function PushEspecificaciones(req,res){
   try{
-      const { Ident,Color}= req.body;
+      const { Color,Talle,Stock,NombreArt}= req.body;
      
           
 
-      const NewEspecificaciones= await SchemaEspecificaciones.create({
-          Ident,
-           Color,
-          
-                   
-      });
-      if(NewEspecificaciones
-        ){
+      const Product= await SchemaProduct1.updateOne({NombreArticulo:NombreArt},{$push:{Especificaciones:{Color,Talle,Stock}}});
+
+      
+       
+           if(Product){
       res
       .status(200)
-      .send({ status: 'OK', data: NewEspecificaciones
+      .send({ status: 'OK', data: Product
     });}
   }catch(err){
       res.status(500).send({ status: 'ERR', data: err.message });
@@ -138,24 +68,28 @@ async function CreateEspecificaciones(req,res){
 // Endpoint para Crear EspecificacionesC
 async function CreateEspecificacionesC(req,res){
   try{
-      const { IdentC,Talle,Stock,CodProdVenta,FechaAlta,IdentColor}= req.body;
+
+    const{_id}=req.params
+      const { IdentCb,Talleb,Stockb,CodProdVentab,FechaAltab,IdentColorb}= req.body;
      
           
+      const Product= await SchemaProduct1.find({NombreArticulo:NombreArt})
+      
+       const NewEspecificacionesC= Product.Especificaciones.id(_id)
+                 
+       NewEspecificacionesC.push({EspecificacionesC:{IdentC:IdentCb,
+                                                    IdentColor:IdentColorb,
+                                                    Talle:Talleb,
+                                                    Stock:Stockb,
+                                                    CodProdVenta:CodProdVentab,
+                                                    FechaAlta:FechaAltab}})
+      await Product.save()      
+      
 
-      const NewEspecificacionesC= await SchemaEspecificacionesC.create({
-          IdentC,
-          IdentColor,
-          Talle,
-          Stock,
-          CodProdVenta,
-          FechaAlta
-                   
-      });
-
-      if(NewEspecificacionesC){
+      if(Product){
       res
       .status(200)
-      .send({ status: 'OK', data: NewEspecificacionesC });}
+      .send({ status: 'OK', data: Product });}
   }catch(err){
       res.status(500).send({ status: 'ERR', data: err.message });
   }
@@ -174,7 +108,7 @@ async function UpdateProduct(req, res) {
              Categoria,
          } = req.body;
      
-      const response = await SchemaPoduct.findOneAndUpdate({NombreProducto:NombreProductob},
+      const response = await SchemaProduct1.findOneAndUpdate({NombreProducto:NombreProductob},
         {IdProduct:IdProduct,
         NombreProducto:NombreProducto,
         Precio:Precio,
@@ -200,15 +134,18 @@ async function UpdateProduct(req, res) {
 //Endpoint para Modificar ESpecificaciones
 async function UpdateEspecificaciones(req, res) {
   try {
-     const{Ident,Identb,Color,Colorb}= req.body;
-               
-    const NewEspecificaciones= await SchemaEspecificaciones.findOneAndUpdate({Ident:Ident,Color:Color},{
-        Ident:Identb,
-        Color:Colorb});
+     const{Identb,Colorb,NombreProductob}= req.body;
+
+    const Product= await SchemaProduct1.find({NombreProducto:NombreProductob});
+    const Especificaciones =Product.Especificaciones.id(_id);
+    const ModEspecificaciones=Product.Especificaciones.indexOff(Especificaciones)
+
+    Product.Especificaciones.set(ModEspecificaciones,{Ident:Identb,Color:Colorb});
         
+    await Product.save()   
   res.status(200).send({
     ok: true,
-    data: NewEspecificaciones });
+    data: Product });
 } catch (ex) {
   return res.status(400).json({
     ok: false,
@@ -220,10 +157,8 @@ async function UpdateEspecificaciones(req, res) {
 async function UpdateEspecificacionesC(req, res) {
     try {
       
-      
-      const {  NombreProducto,
-        Color,
-        Talle,
+      const{_id,_id2}=req.params
+      const {          
         Identb,
         IdentColorb,
         Talleb,
@@ -232,18 +167,24 @@ async function UpdateEspecificacionesC(req, res) {
         CodProdVentab
          } = req.body;
      
-      const response = await SchemaEspecificacionesC.findOneAndUpdate({IdentC:NombreProducto,IdentColor:Color,Talle:Talle}, {
-        IdentC:Identb,
-        IdentColor:IdentColorb,
-        CodProdVenta:CodProdVentab,
-        FecahAlta:FechaAltab ,
-        Talle:Talleb ,
-        Stock:Stockb
-      });
+         
+    const Product= await SchemaProduct1.find({NombreProducto:NombreProductob});
+    const Especificaciones =Product.Especificaciones.id(_id);
+    const EspecificacionesC=Especificaciones.EspecificacionesC.id(_id2);
+    const ModEspecificacionesC=Especificaciones.EspecificacionesC.indexOff(EspecificacionesC)
+
+    Product.Especificaciones.set(ModEspecificacionesC,{IdentC:Identb,
+                                                     IdentColor:IdentColorb,
+                                                     CodProdVenta:CodProdVentab,
+                                                     FecahAlta:FechaAltab ,
+                                                     Talle:Talleb ,
+                                                     Stock:Stockb});
+
+     await Product.save()
   
       res.status(200).json({
         ok: true,
-        data: response,
+        data: Product,
       });
     } catch (ex) {
       return res.status(400).json({
@@ -258,17 +199,24 @@ async function UpdatePicture(req, res) {
   try {
     
 
-    const { _id  }= req.body;
+    const { _id,_id2  }= req.body;
 
   
      const result= await UploadPicture(req.files.file[0])
     
       const secure_url = result.secure_url;
      
-   const response = await SchemaEspecificaciones.findByIdAndUpdate(_id, {
-      UrlImag: secure_url,
-    });
+  //  const response = await SchemaEspecificaciones.findByIdAndUpdate(_id, {
+  //     UrlImag: secure_url,
+  //   });
 
+    const response= await SchemaProduct1.findById(_id);
+    const Especificaciones= response.Especificaciones.id(_id2);
+    const ModEspecificaciones=response.Especificaciones.indexOff(Especificaciones);
+
+    response.Especificaciones.set(ModEspecificaciones,{UrlImag: secure_url})
+
+      await response.save()
     res.status(200).json({
       ok: true,
       data: response
@@ -328,11 +276,11 @@ async function DeleteEspecificacionesC(req,res){
 };
 
  export {GetCompleteProducts,
-         GetProducts,
-         GetEspecificaciones,
-         GetEspecificacionesC,
+        //  GetProducts,
+        //  GetEspecificaciones,
+        //  GetEspecificacionesC,
          CreateProducts,
-         CreateEspecificaciones,
+         PushEspecificaciones,
          CreateEspecificacionesC,
          UpdateProduct,
          UpdateEspecificaciones,
