@@ -14,7 +14,12 @@ const SchemaPoduct1 = new mongoose.Schema({
     Detalle: { type: 'String', required: true },
     Categoria:{ type: 'String', required: true },
     UrlImagen:[{type: 'String'}],  // es un array de strings;
-    Especificaciones:{type:[{Color:"String",Talle:"Number",Stock:"Number"}]}
+    Especificaciones:{type:[{Color:"String",
+                            Talle:"Number",
+                            Stock:"Number",
+                            Fecha:"date",
+                            CodProducto:"Sting",
+                            Estado:{type:"Sting",enum:[Alta,Baja]}}]}
    
     });
 

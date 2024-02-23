@@ -8,13 +8,13 @@ import { UploadPicture } from './CloudinaryProductController.js';
     try{
 
 
-const Data=  await SchemaProduct1.find();
+      const Data=  await SchemaProduct1.find({_id:'65d5271e58e03f80203e45e4',Especificaciones:{_id:'65d5271e58e03f80203e45e5'}});
 
         res.status(200).send({ status: 'OK', data:Data})
     }catch(err){
         res.status(500).send({ status: 'ERR', data: err.message });
     }
-}
+};
 
 // Endpoint para Crear productos
 async function CreateProducts(req,res){
@@ -45,51 +45,36 @@ async function CreateProducts(req,res){
 }
 
 // Endpoint para Crear Especificaciones
-async function PushEspecificaciones(req,res){
+async function UploadEspecificaciones(req,res){
   try{
-      const { Color,Talle,Stock,NombreArt}= req.body;
+      const { Color,Talle,Stock,NombreArt,id,id2}= req.body;
      
-          
+          const Prod= await SchemaProduct1.find({NombreArticulo:NombreArt});
+          if(Prod){
 
-      const Product= await SchemaProduct1.updateOne({NombreArticulo:NombreArt},{$push:{Especificaciones:{Color,Talle,Stock}}});
+            const Product= await SchemaProduct1.updateOne(
+            {_id:id,NombreArticulo:NombreArt},
+            { $set: { 'Especificaciones.$.Color': Color,
+                      'Especificaciones.$.Talle': Talle,
+                      'Especificaciones.$.Stock': Color } },
+            { arrayFilters: [{ 'Especificaciones._id': id2
+                     }]})
+            if(Product){
+              res
+              .status(200)
+              .send({ status: 'OK', data: Product
+            });}
 
-      
+          }else{const Product= await SchemaProduct1.updateOne(
+            {NombreArticulo:NombreArt},{$push:{Especificaciones:{Color,Talle,Stock}}});
+            if(Product){
+              res
+              .status(200)
+              .send({ status: 'OK', data: Product
+            });}
+          }
        
-           if(Product){
-      res
-      .status(200)
-      .send({ status: 'OK', data: Product
-    });}
-  }catch(err){
-      res.status(500).send({ status: 'ERR', data: err.message });
-  }
-}
-
-// Endpoint para Crear EspecificacionesC
-async function CreateEspecificacionesC(req,res){
-  try{
-
-    const{_id}=req.params
-      const { IdentCb,Talleb,Stockb,CodProdVentab,FechaAltab,IdentColorb}= req.body;
-     
-          
-      const Product= await SchemaProduct1.find({NombreArticulo:NombreArt})
-      
-       const NewEspecificacionesC= Product.Especificaciones.id(_id)
-                 
-       NewEspecificacionesC.push({EspecificacionesC:{IdentC:IdentCb,
-                                                    IdentColor:IdentColorb,
-                                                    Talle:Talleb,
-                                                    Stock:Stockb,
-                                                    CodProdVenta:CodProdVentab,
-                                                    FechaAlta:FechaAltab}})
-      await Product.save()      
-      
-
-      if(Product){
-      res
-      .status(200)
-      .send({ status: 'OK', data: Product });}
+       
   }catch(err){
       res.status(500).send({ status: 'ERR', data: err.message });
   }
@@ -118,11 +103,11 @@ async function UpdateProduct(req, res) {
 
     
   
-   
+   if(response){
     res.status(200).json({
       ok: true,
       data: response
-    });
+    })};
   } catch (ex) {
     return res.status(400).json({
       ok: false,
@@ -131,78 +116,15 @@ async function UpdateProduct(req, res) {
   }
 }
 
-//Endpoint para Modificar ESpecificaciones
-async function UpdateEspecificaciones(req, res) {
-  try {
-     const{Identb,Colorb,NombreProductob}= req.body;
-
-    const Product= await SchemaProduct1.find({NombreProducto:NombreProductob});
-    const Especificaciones =Product.Especificaciones.id(_id);
-    const ModEspecificaciones=Product.Especificaciones.indexOff(Especificaciones)
-
-    Product.Especificaciones.set(ModEspecificaciones,{Ident:Identb,Color:Colorb});
-        
-    await Product.save()   
-  res.status(200).send({
-    ok: true,
-    data: Product });
-} catch (ex) {
-  return res.status(400).json({
-    ok: false,
-    err: ex.message,
-  });
-}
-}
-  // Endpoint para Modificar especificacionesC
-async function UpdateEspecificacionesC(req, res) {
-    try {
-      
-      const{_id,_id2}=req.params
-      const {          
-        Identb,
-        IdentColorb,
-        Talleb,
-        Stockb,
-        FechaAltab,
-        CodProdVentab
-         } = req.body;
-     
-         
-    const Product= await SchemaProduct1.find({NombreProducto:NombreProductob});
-    const Especificaciones =Product.Especificaciones.id(_id);
-    const EspecificacionesC=Especificaciones.EspecificacionesC.id(_id2);
-    const ModEspecificacionesC=Especificaciones.EspecificacionesC.indexOff(EspecificacionesC)
-
-    Product.Especificaciones.set(ModEspecificacionesC,{IdentC:Identb,
-                                                     IdentColor:IdentColorb,
-                                                     CodProdVenta:CodProdVentab,
-                                                     FecahAlta:FechaAltab ,
-                                                     Talle:Talleb ,
-                                                     Stock:Stockb});
-
-     await Product.save()
-  
-      res.status(200).json({
-        ok: true,
-        data: Product,
-      });
-    } catch (ex) {
-      return res.status(400).json({
-        ok: false,
-        err: ex.message,
-      });
-    }
-  }
-
 // Endpoint para subir la imagen
 async function UpdatePicture(req, res) {
   try {
     
 
-    const { _id,_id2  }= req.body;
+    const { _id  }= req.body;
 
   
-     const result= await UploadPicture(req.files.file[0])
+     const result= await UploadPicture(req.files.file[-1])
     
       const secure_url = result.secure_url;
      
@@ -210,17 +132,15 @@ async function UpdatePicture(req, res) {
   //     UrlImag: secure_url,
   //   });
 
-    const response= await SchemaProduct1.findById(_id);
-    const Especificaciones= response.Especificaciones.id(_id2);
-    const ModEspecificaciones=response.Especificaciones.indexOff(Especificaciones);
-
-    response.Especificaciones.set(ModEspecificaciones,{UrlImag: secure_url})
-
-      await response.save()
+    const response= await SchemaProduct1.updateOne({_id:_id},
+       { $push: { UrlImag: { secure_url } } }
+      );
+   
+      if(response){
     res.status(200).json({
       ok: true,
       data: response
-    });
+    })};
   } catch (ex) {
     return res.status(400).json({
       ok: false,
@@ -234,7 +154,7 @@ async function UpdatePicture(req, res) {
  async function DeleteProduct(req,res){
     try{
         const { id }= req.params
-        const ProductDelete= await SchemaPoduct.findByIdAndDelete(id)
+        const ProductDelete= await SchemaProduct1.findByIdAndDelete(id)
 
         if(ProductDelete){
             return res.status(200).send({status:"ok",data:"porcess"})
@@ -245,29 +165,17 @@ async function UpdatePicture(req, res) {
     }
  };
 
- // Endpoint para Borrar producto entero
- async function DeleteEspecificaciones(req,res){
+// Endpoint para Borrar objeto de Especificaciones
+async function DeleteEspecificaciones(req,res){
   try{
-      const { id }= req.params
-      const EspecificacionesDelete= await SchemaEspecificaciones.findByIdAndDelete(id)
+      const { id,id2 }= req.params
+      const EspecificacionesDelete= await SchemaProduct1.findById(id)
+      EspecificacionesDelete.Especificaciones.id(id2).deleteOne()
+
+      await EspecificacionesDelete.save()
 
       if(EspecificacionesDelete){
-          return res.status(200).send({status:"ok",data:"porcess"})
-      }
-
-  }catch(err){
-      res.status(500).send({ status: 'ERR', data: err.message });
-  }
-};
-
-// Endpoint para Borrar producto entero
-async function DeleteEspecificacionesC(req,res){
-  try{
-      const { id }= req.params
-      const EspecificacionesDelete= await SchemaEspecificacionesC.findByIdAndDelete(id)
-
-      if(EspecificacionesDelete){
-          return res.status(200).send({status:"ok",data:"porcess"})
+          return res.status(200).send({status:"ok",data:"Objeto Borrado"})
       }
 
   }catch(err){
@@ -276,15 +184,12 @@ async function DeleteEspecificacionesC(req,res){
 };
 
  export {GetCompleteProducts,
-        //  GetProducts,
-        //  GetEspecificaciones,
-        //  GetEspecificacionesC,
+      
          CreateProducts,
-         PushEspecificaciones,
-         CreateEspecificacionesC,
+         UploadEspecificaciones,
+        
          UpdateProduct,
-         UpdateEspecificaciones,
-         UpdateEspecificacionesC,
+         
          UpdatePicture,
          DeleteProduct,
          DeleteEspecificaciones,      

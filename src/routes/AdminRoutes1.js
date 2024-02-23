@@ -5,7 +5,7 @@ import {GetCompleteProducts,
 //   GetEspecificaciones,
 //   GetEspecificacionesC,
   CreateProducts,
-  PushEspecificaciones,
+  UploadEspecificaciones,
   CreateEspecificacionesC,
   UpdateProduct,
   UpdateEspecificaciones,
@@ -20,18 +20,15 @@ const router= Router();
 
 const upload = multer({
     storage: multer.diskStorage({}),
-  }).fields([{ name: "file", maxCount: 1 }]);
+  }).fields([{ name: "file", maxCount: 4 }]);
 
 router.get('/Admin1',GetCompleteProducts);
-// router.get('/Admin1/Product',GetProducts);
-// router.get('/Admin1/Especificaciones',GetEspecificaciones);
-// router.get('/Admin1/EspecificacionesC',GetEspecificacionesC);
+
 router.post('/Admin1',CreateProducts);
-router.put('/Admin1/Push',PushEspecificaciones);
-router.post('/Admin1/EspecificacionesC',CreateEspecificacionesC);
+router.put('/Admin1/Push',UploadEspecificaciones);
+
 router.put('/Admin1/Products',UpdateProduct);
-router.put('/Admin1/Especificaciones',UpdateEspecificaciones);
-router.put('/Admin1/EspecificacionesC',UpdateEspecificacionesC);
+
 router.put('/Admin1/Picture',[upload],UpdatePicture);
 router.delete("/Admin1/:id",DeleteProduct);
 router.delete("/Admin1/Especificaciones/:id",DeleteEspecificaciones);
