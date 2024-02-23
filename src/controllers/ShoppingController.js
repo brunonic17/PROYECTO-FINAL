@@ -1,12 +1,14 @@
 import Shoppings from "../models/shopping.models.js";
-import Products from "../models/product.model.js";
+import Products from "../models/ProductModel1.js";
 
 
 //BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA
 async function GetProduct(req, res) {
   try {
     const { IdUsu } = req.body;
-    const Carro = await Shoppings.findOne({ IdUsu: IdUsu });
+    const Carro = await Shoppings.findOne({ IdUsu: IdUsu});
+
+
     if (Carro) {
       res.status(200).send({ status: "OK", data: Carro });
     } else {
@@ -26,14 +28,10 @@ async function PostProduct(req, res) {
       TipoPagoCarro, pid
     } = req.body;
     
-        
-      const newCarrito = await Shoppings.create({IdUsu, FechaCarro,TipoPagoCarro });
       const Product = await Products.findOne({_id:pid });
-      
-      // let Precio  = Product.price;
-      // let Producto = CantProduct * Precio;
-      let ParcialProduct = Product.price * CantProduct
-     
+      let ParcialProduct = Product.Precio * CantProduct;
+      let TotalCarro = ParcialProduct
+      const newCarrito = await Shoppings.create({IdUsu, FechaCarro,TipoPagoCarro, TotalCarro });
 
       newCarrito.DetalleCarro.push({
         pid,
@@ -52,65 +50,59 @@ async function PostProduct(req, res) {
   }
 }
 
-//PARA AGREGAR ARTICULOS AL CARRITO EXISTENTE DE UN USUARIO
-async function PushProduct(req, res) {
+// PARA AGREGAR ARTICULOS AL CARRITO EXISTENTE DE UN USUARIO
+async function PushProduct(req , res) {
   try {
 
       const {CantProduct, pid, cid } = req.body;
-      const process = await Shoppings.updateOne(
-          { _id: cid, 'DetalleCarro.pid': pid },
-          { $set: { 'DetalleCarro.$.CantProduct': CantProduct } },
-          { arrayFilters: [{ 'DetalleCarro.pid': pid }] }
-      );
 
-      if (process.matchedCount === 0 || process.modifiedCount === 0) {
-          // Si ingresa, es porque el id de producto no existe en el array, se agrega nuevo
-          return await Shoppings.updateOne(
-              { _id: cid },
-              { $push: { DetalleCarro: { pid, CantProduct } } }
-          );
-      } else {
-          return process;
-      };
+          const Product = await Products.findOne({_id:pid });
+          if (Product.Stock > CantProduct) {
+                   
+          let ParcialProduct = Product.Precio * CantProduct;
+          const cart=await Shoppings.findById(cid);
+          const m=await Shoppings.find({DetalleCarro:{pid:pid}})
+          const Total=cart.TotalCarro+ParcialProduct;
+          if(cart.DetalleCarro.pid=Product._id){
+            const modific= await Shoppings.updateOne(
+              { _id:cid, 'DetalleCarro.pid': pid },
+              { $set: { 'DetalleCarro.$.CantProduct': CantProduct } },
+              { arrayFilters: [{ 'DetalleCarro.pid': pid }] }
+            );    
+            res.status(200).send({status:'ok', data: "se modifico" })
+          }else{
+            const modifica= await Shoppings.updateOne(
+            { _id: cid },
+            { TotalCarro:Total,
+              $push: { DetalleCarro: { pid, CantProduct,ParcialProduct } } }
+            );  
+            res.status(200).send({status:'ok', data: "se agrego" })
+          }       
+          } else {
+            res
+            .status(500)
+            .send({ status: "ERR", data: "Cantidad Superior a la Existencia" });
+          }   
     } catch (err) {
       res.status(500).send({ status: "ERR", data: err.message });
-    }
+    }}
  
-}
-
-//PARA MODFICAR ARTICULOS AL CARRITO EXISTENTE DE UN USUARIO
-async function PatchProduct(req, res) {
+//PARA ELIMINAR UN ARTICULO DE UN CARRITO EXISTENTE
+async function DeleteProduct(req, res) {
   try {
-    const {IdUsu, IdProduct, CantProduct, FechaCarro,
-      TipoPagoCarro,
-    } = req.body;
+    const {cid, pid } = req.body;
+    const eliminar=await Shoppings.deleteOne({ 'DetalleCarro.$._id': pid } ,
+                                              { arrayFilters: [{ 'DetalleCarro._id': pid }] });
 
-    const newCarrito = await Shoppings.updateOne(
-      {
-    });
+    
 
-    newCarrito.DetalleCarro.push({
-      IdArtCarro: IdProduct,
-      IdProdCarro: CodProdVenta,
-      DescArtCarro: NombreProducto,
-      ImgCarro: UrlImage,
-      ColorCarro: Color,
-      TalleCarro: Talle,
-      PcioCarro: Precio,
-      CantCarro: CantProduct,
-      ParcialCarro: Precio * CantProduct,
-    });
+    
+        
+    res.status(200).send({ status: "OK", data: "Articulo Eliminado" });
 
-    await newCarrito.save();
-
-    return res.status(200).json({
-      ok: true,
-      data: newCarrito,
-    });
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
 }
 
-
-export { GetProduct, PostProduct, PatchProduct, PushProduct};
+export {GetProduct, PostProduct, PushProduct, DeleteProduct}
