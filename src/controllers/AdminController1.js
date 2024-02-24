@@ -4,13 +4,16 @@ import { UploadPicture } from './CloudinaryProductController.js';
 
 // Endpoint para obtener productos completo
  async function GetCompleteProducts(req,res){
-
+const {id,id2}=req.body
     try{
 
 
-      const Data=  await SchemaProduct1.find({_id:'65d5271e58e03f80203e45e4',Especificaciones:{_id:'65d5271e58e03f80203e45e5'}});
+      // const Data=  await SchemaProduct1.find();
+      const Prod= await SchemaProduct1.findById(id);
 
-        res.status(200).send({ status: 'OK', data:Data})
+          let Especific=Prod.Especificaciones.find(element=> {return element._id==id2})
+      
+        res.status(200).send({ status: 'OK', data:Especific})
     }catch(err){
         res.status(500).send({ status: 'ERR', data: err.message });
     }
@@ -47,18 +50,22 @@ async function CreateProducts(req,res){
 // Endpoint para Crear Especificaciones
 async function UploadEspecificaciones(req,res){
   try{
-      const { Color,Talle,Stock,NombreArt,id,id2}= req.body;
+      const { Color,Talle,Stock,NombreArt,id,id2,Fecha,CodProducto,Estado}= req.body;
      
-          const Prod= await SchemaProduct1.find({NombreArticulo:NombreArt});
-          if(Prod){
+          const Prod= await SchemaProduct1.findById(id);
+
+          const Especific=Prod.Especificaciones.find(element=> {return element._id==id2})
+
+      
+          if(Especific!=undefined){
 
             const Product= await SchemaProduct1.updateOne(
-            {_id:id,NombreArticulo:NombreArt},
-            { $set: { 'Especificaciones.$.Color': Color,
-                      'Especificaciones.$.Talle': Talle,
-                      'Especificaciones.$.Stock': Color } },
-            { arrayFilters: [{ 'Especificaciones._id': id2
-                     }]})
+            {NombreArticulo:NombreArt,'Especificaciones.CodProducto' : CodProducto},
+            { $set: { 
+                      'Especificaciones.$.Stock': Stock,
+                      'Especificaciones.$.Fecha':Fecha ,
+                      'Especificaciones.$.Estado':Estado } },
+            { arrayFilters: [{ 'Especificaciones.CodProducto' : CodProducto}] }) ;
             if(Product){
               res
               .status(200)
@@ -66,7 +73,7 @@ async function UploadEspecificaciones(req,res){
             });}
 
           }else{const Product= await SchemaProduct1.updateOne(
-            {NombreArticulo:NombreArt},{$push:{Especificaciones:{Color,Talle,Stock}}});
+            {NombreArticulo:NombreArt},{$push:{Especificaciones:{Color,Talle,Stock,Fecha,CodProducto}}});
             if(Product){
               res
               .status(200)
@@ -86,20 +93,18 @@ async function UpdateProduct(req, res) {
 
       const {NombreProductob,
              NombreProducto,
-             IdProduct,
              Precio,
              Detalle,
-             UltimoPrecio,
-             Categoria,
+             UltimoPrecio
          } = req.body;
      
       const response = await SchemaProduct1.findOneAndUpdate({NombreProducto:NombreProductob},
-        {IdProduct:IdProduct,
+        {
         NombreProducto:NombreProducto,
         Precio:Precio,
         Detalle:Detalle,
         UltimoPrecio:UltimoPrecio,
-        Categoria:Categoria});
+        });
 
     
   
@@ -124,22 +129,20 @@ async function UpdatePicture(req, res) {
     const { _id  }= req.body;
 
   
-     const result= await UploadPicture(req.files.file[-1])
+     const result= await UploadPicture(req.files.file[0])
     
       const secure_url = result.secure_url;
      
-  //  const response = await SchemaEspecificaciones.findByIdAndUpdate(_id, {
-  //     UrlImag: secure_url,
-  //   });
+   const response = await SchemaProduct1.findById(_id);
+   response.UrlImagen.push(secure_url);
 
-    const response= await SchemaProduct1.updateOne({_id:_id},
-       { $push: { UrlImag: { secure_url } } }
-      );
+   const saveImage =await response.save();
+
    
       if(response){
     res.status(200).json({
       ok: true,
-      data: response
+      data: saveImage
     })};
   } catch (ex) {
     return res.status(400).json({
@@ -168,11 +171,14 @@ async function UpdatePicture(req, res) {
 // Endpoint para Borrar objeto de Especificaciones
 async function DeleteEspecificaciones(req,res){
   try{
-      const { id,id2 }= req.params
-      const EspecificacionesDelete= await SchemaProduct1.findById(id)
-      EspecificacionesDelete.Especificaciones.id(id2).deleteOne()
+      const { NombreArt,CodProducto }= req.body
+      // const EspecificacionesDelete= await SchemaProduct1.findById(id)
+      // EspecificacionesDelete.Especificaciones.pull({_id:id2})
 
-      await EspecificacionesDelete.save()
+      const Product= await SchemaProduct1.updateOne(
+        {NombreArticulo:NombreArt,'Especificaciones.CodProducto' : CodProducto},
+        {$pull:{Especificaciones:{CodProducto}}},
+        { arrayFilters: [{'Especificaciones.CodProducto':CodProducto}] })
 
       if(EspecificacionesDelete){
           return res.status(200).send({status:"ok",data:"Objeto Borrado"})
@@ -184,13 +190,10 @@ async function DeleteEspecificaciones(req,res){
 };
 
  export {GetCompleteProducts,
-      
          CreateProducts,
          UploadEspecificaciones,
-        
          UpdateProduct,
-         
          UpdatePicture,
          DeleteProduct,
          DeleteEspecificaciones,      
-         DeleteEspecificacionesC} 
+         } 

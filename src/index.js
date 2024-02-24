@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors'; 
+import body from 'body-parser';
 
 
 
@@ -13,9 +14,7 @@ import  AdminRoutes  from './routes/AdminRoutes.js';
 import  AdminRoutes1  from './routes/AdminRoutes1.js'; 
 import { ConectCloudinary } from './controllers/CloudinaryProductController.js';
 
-const APP_PORT=3000;
-
-
+const APP_PORT=3001;
 
 
 
@@ -29,7 +28,10 @@ try {
  ConectCloudinary('dvrushrqw','497118466574166','icqxE9_gaxrCJzyNHRxQiJN9wRc')
   
   const app = express();
-
+  app.use(body.json());
+  app.use(body.urlencoded({ extended: true}));
+  
+  
   app.listen(APP_PORT, () => {
       console.log(`Backend iniciado en puerto ${APP_PORT}, conectado a bbdd`)
   })
@@ -44,7 +46,7 @@ try {
   app.use(express.urlencoded({ extended: true }));
 
   
-  app.use( '/api' ,AdminRoutes );
+  // app.use( '/api' ,AdminRoutes );
   app.use( '/api' ,AdminRoutes1 );
 
 

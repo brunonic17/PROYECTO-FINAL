@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 mongoose.pluralize(null);
 
-const collection="Products1"
+const collection="Products"
 
 
 const SchemaPoduct1 = new mongoose.Schema({
@@ -18,8 +18,8 @@ const SchemaPoduct1 = new mongoose.Schema({
                             Talle:"Number",
                             Stock:"Number",
                             Fecha:"date",
-                            CodProducto:"Sting",
-                            Estado:{type:"Sting",enum:[Alta,Baja]}}]}
+                            CodProducto:"String",
+                            Estado:{type:"String",enum:['Alta','Baja'],default:'Alta'}}]}
    
     });
 
