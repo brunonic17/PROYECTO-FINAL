@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 mongoose.pluralize(null);
 
-const collection="Products1"
+const Collections2="Products1"
 
 
 const SchemaPoduct1 = new mongoose.Schema({
@@ -23,4 +23,4 @@ const SchemaPoduct1 = new mongoose.Schema({
 
 
 
-export default mongoose.model( collection , SchemaPoduct1)
+export default mongoose.model( Collections2 , SchemaPoduct1)
