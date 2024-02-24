@@ -133,11 +133,13 @@ async function ConfirmaShopping(req, res) {
     const newCarrito = await Pay.create({ IdUsu,
                                           FechaPay,
                                           TotalPay : BackShopping.TotalCarro,
-                                          TipoPagoPay
+                                          TipoPagoPay,
+                                          DetallePay: []
                                         });
-
-            for (numero of BackDetalleCarro) {
-                  newCarrito.DetallePay.push(numero)};
+              newCarrito.DetallePay = BackDetalleCarro.map(item => {
+                
+              return item
+            })
 
     await newCarrito.save();
 

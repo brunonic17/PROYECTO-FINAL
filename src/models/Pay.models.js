@@ -9,7 +9,7 @@ const SchemaPay = new mongoose.Schema ({
     FechaPay : {type: "Date", required: true},
     TotalPay : {type: "Number"},
     TipoPagoPay : {type: "String", enum: ['Transferencia', 'Tarjeta', 'Mercado Pago'], default: 'Mercado Pago'},
-    DetallePay : {type: [{ IdProductCarro: { type: 'number', required: true },
+    DetallePay : {type: [{ IdProductCarro: { type: 'number'},
                             ImgCarro: {Type: "String"},
                             DescArtCarro : {type: "String"},
                             TalleCarro : {type: "Number"},
