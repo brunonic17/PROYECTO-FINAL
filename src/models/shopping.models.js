@@ -17,7 +17,7 @@ const SchemaShoppings = new mongoose.Schema ({
 
 
 
-SchemaShoppings.pre('findOne', function() {
+SchemaShoppings.pre('find', function() {
     this.populate(       
         {path:'DetalleCarro.pid',model:productModel})
 });

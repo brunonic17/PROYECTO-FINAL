@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import {GetProduct, PostProduct, PushProduct, DeleteProduct} from '../controllers/ShoppingController.js'
+import {GetProduct, PostProduct, PushProduct, DeleteProduct, DeleteShoping} from '../controllers/ShoppingController.js'
 
 const router = Router()
 
@@ -11,7 +11,8 @@ router.patch('/', PushProduct)
 
 router.delete('/', DeleteProduct)
 
-// router.delete('/shopping', DeleteShopping)
+router.delete('/elimina', DeleteShoping)
+
 
 
 export default router

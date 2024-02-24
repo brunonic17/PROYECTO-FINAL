@@ -5,9 +5,8 @@ import Products from "../models/ProductModel1.js";
 //BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA
 async function GetProduct(req, res) {
   try {
-    const { IdUsu } = req.body;
-    const Carro = await Shoppings.findOne({ IdUsu: IdUsu});
-
+    const { IdUsu,cid,pid} = req.body;
+    const Carro = await Shoppings.find({ IdUsu: IdUsu});
 
     if (Carro) {
       res.status(200).send({ status: "OK", data: Carro });
@@ -54,30 +53,31 @@ async function PostProduct(req, res) {
 async function PushProduct(req , res) {
   try {
 
-      const {CantProduct, pid, cid } = req.body;
+      const {CantProduct, pid, cid, id} = req.body;
 
           const Product = await Products.findOne({_id:pid });
           if (Product.Stock > CantProduct) {
                    
-          let ParcialProduct = Product.Precio * CantProduct;
-          const cart=await Shoppings.findById(cid);
-          const m=await Shoppings.find({DetalleCarro:{pid:pid}})
-          const Total=cart.TotalCarro+ParcialProduct;
-          if(cart.DetalleCarro.pid=Product._id){
-            const modific= await Shoppings.updateOne(
-              { _id:cid, 'DetalleCarro.pid': pid },
-              { $set: { 'DetalleCarro.$.CantProduct': CantProduct } },
-              { arrayFilters: [{ 'DetalleCarro.pid': pid }] }
-            );    
-            res.status(200).send({status:'ok', data: "se modifico" })
-          }else{
-            const modifica= await Shoppings.updateOne(
-            { _id: cid },
-            { TotalCarro:Total,
-              $push: { DetalleCarro: { pid, CantProduct,ParcialProduct } } }
-            );  
-            res.status(200).send({status:'ok', data: "se agrego" })
-          }       
+            let ParcialProduct = Product.Precio * CantProduct;
+            const Cart = await Shoppings.findOne({_id:cid});
+            let Total=Cart.TotalCarro+ParcialProduct;
+            const CC = Cart.DetalleCarro.find(elemento => {return elemento.pid == pid});
+
+            if(CC!=undefined){
+              const modific= await Shoppings.updateOne(
+                { _id:cid, 'DetalleCarro.pid': pid },
+                { $set: { 'DetalleCarro.$.CantProduct': CantProduct } },
+                { arrayFilters: [{ 'DetalleCarro.pid': pid }] }
+              );    
+              res.status(200).send({status:'ok', data: "se modifico" })
+            }else{
+              const modifica= await Shoppings.updateOne(
+              { _id: cid },
+              { TotalCarro:Total,
+                $push: { DetalleCarro: { pid, CantProduct,ParcialProduct } } }
+              );  
+              res.status(200).send({status:'ok', data: "se agrego" })
+            }       
           } else {
             res
             .status(500)
@@ -90,19 +90,32 @@ async function PushProduct(req , res) {
 //PARA ELIMINAR UN ARTICULO DE UN CARRITO EXISTENTE
 async function DeleteProduct(req, res) {
   try {
-    const {cid, pid } = req.body;
-    const eliminar=await Shoppings.deleteOne({ 'DetalleCarro.$._id': pid } ,
-                                              { arrayFilters: [{ 'DetalleCarro._id': pid }] });
+    const {pid, cid} = req.body;
 
-    
+          const Cart = await Shoppings.findOne({_id:cid});
+          const CC = Cart.DetalleCarro.find(elemento => {return elemento.pid == pid});
+          let Total=Cart.TotalCarro-CC.ParcialProduct;
 
-    
-        
-    res.status(200).send({ status: "OK", data: "Articulo Eliminado" });
-
+          const modifica= await Shoppings.updateOne(
+            { _id: cid , "DetalleCarro.pid":pid},
+            { TotalCarro:Total, $pull: { DetalleCarro: { pid} }},
+            { arrayFilters: [{ 'DetalleCarro.pid': pid }] })
+ 
+            res.status(200).send({status:'ok', data: "Se Elmino" })
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
 }
 
-export {GetProduct, PostProduct, PushProduct, DeleteProduct}
+//PARA ELIMINAR UN CARRITO EXISTENTE
+async function DeleteShoping(req, res) {
+  try {
+    const {cid} = req.body;
+        const dele = await Shoppings.findByIdAndDelete(cid)
+        res.status(200).send({status:'ok', data: "Se Elmino" })
+  } catch (err) {
+    res.status(500).send({ status: "ERR", data: err.message });
+  }
+}
+export {GetProduct, PostProduct, PushProduct, DeleteProduct, DeleteShoping}
+
