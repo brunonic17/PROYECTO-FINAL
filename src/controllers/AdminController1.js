@@ -156,11 +156,11 @@ async function UpdatePicture(req, res) {
 // Endpoint para Borrar producto entero
  async function DeleteProduct(req,res){
     try{
-        const { id }= req.params
+        const { id }= req.body
         const ProductDelete= await SchemaProduct1.findByIdAndDelete(id)
 
         if(ProductDelete){
-            return res.status(200).send({status:"ok",data:"porcess"})
+            return res.status(200).send({status:"ok",data:"Se elimino el prducto"})
         }
 
     }catch(err){
@@ -170,24 +170,40 @@ async function UpdatePicture(req, res) {
 
 // Endpoint para Borrar objeto de Especificaciones
 async function DeleteEspecificaciones(req,res){
-  try{
-      const { NombreArt,CodProducto }= req.body
-      // const EspecificacionesDelete= await SchemaProduct1.findById(id)
-      // EspecificacionesDelete.Especificaciones.pull({_id:id2})
+  try {
+    const {id, id2} = req.body;
 
-      const Product= await SchemaProduct1.updateOne(
-        {NombreArticulo:NombreArt,'Especificaciones.CodProducto' : CodProducto},
-        {$pull:{Especificaciones:{CodProducto}}},
-        { arrayFilters: [{'Especificaciones.CodProducto':CodProducto}] })
 
-      if(EspecificacionesDelete){
-          return res.status(200).send({status:"ok",data:"Objeto Borrado"})
-      }
+          const DeleteEspecificaciones= await SchemaProduct1.findById(id);
+          DeleteEspecificaciones.Especificaciones.id(id2).deleteOne()
 
-  }catch(err){
-      res.status(500).send({ status: 'ERR', data: err.message });
+          await  DeleteEspecificaciones.save();
+ 
+            res.status(200).send({status:'ok', data: "Se Elimino" })
+  } catch (err) {
+    res.status(500).send({ status: "ERR", data: err.message });
   }
-};
+}
+;
+
+// Endpoint para Borrar objeto de Especificaciones
+async function DeleteImage(req,res){
+  try {
+    const {id, id2} = req.body;
+
+
+          const DeleteEspecificaciones= await SchemaProduct1.findById(id);
+          
+          DeleteEspecificaciones.UrlImagen.pull(id2)
+
+          await  DeleteEspecificaciones.save();
+ 
+            res.status(200).send({status:'ok', data: "Se Elimino" })
+  } catch (err) {
+    res.status(500).send({ status: "ERR", data: err.message });
+  }
+}
+;
 
  export {GetCompleteProducts,
          CreateProducts,
@@ -195,5 +211,6 @@ async function DeleteEspecificaciones(req,res){
          UpdateProduct,
          UpdatePicture,
          DeleteProduct,
-         DeleteEspecificaciones,      
+         DeleteEspecificaciones,
+         DeleteImage     
          } 
