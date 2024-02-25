@@ -127,7 +127,7 @@ async function DeleteShopping(req, res) {
 //PARA CONFIRMAR EL CARRITO EXISTENTE
 async function ConfirmaShopping(req, res) {
   try {
-    const {cid, IdUsu, FechaPay, TipoPagoPay} = req.body;
+    const {cid, IdUsu, FechaPay, TipoPagoPay, pid} = req.body;
     const BackShopping = await Shoppings.findOne({_id:cid})
     const BackDetalleCarro = BackShopping.DetalleCarro
     const newCarrito = await Pay.create({ IdUsu,
@@ -136,10 +136,24 @@ async function ConfirmaShopping(req, res) {
                                           TipoPagoPay,
                                           DetallePay: []
                                         });
+                                        
               newCarrito.DetallePay = BackDetalleCarro.map(item => {
+                    return item              
+              })
+              for (let i = 0; index < array.length; index++) {
+                const element = array[index];
                 
-              return item
-            })
+              }
+
+
+
+              const Product = await Products.findOne({IdProduct:newCarrito.DetallePay.IdProductCarro });
+
+          //     newCarrito.DetallePay.forEach(element => {
+ 
+                
+            
+          // });
 
     await newCarrito.save();
 
