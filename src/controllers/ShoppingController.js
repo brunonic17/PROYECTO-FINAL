@@ -80,7 +80,7 @@ async function PushProduct(req , res) {
               const modifica= await Shoppings.updateOne(
               { _id: cid },
               { TotalCarro:Total,
-                $push: { DetalleCarro: { pid, CantProduct,ParcialProduct } } }
+                $push: { DetalleCarro: { pid, CantProduct,ParcialProduct, IdProductCarro } } }
               );  
               res.status(200).send({status:'ok', data: "se agrego" })
             }       
@@ -136,24 +136,19 @@ async function ConfirmaShopping(req, res) {
                                           TipoPagoPay,
                                           DetallePay: []
                                         });
-                                        
-              newCarrito.DetallePay = BackDetalleCarro.map(item => {
-                    return item              
-              })
-              for (let i = 0; index < array.length; index++) {
-                const element = array[index];
-                
-              }
+                for (let i = 0; i < BackDetalleCarro.length; i++) {
+                      const element = BackDetalleCarro[i];
+                      const Product = await Products.findOne({IdProduct:element.IdProductCarro});
+                      newCarrito.DetallePay.push({
+                        IdProductCarro : Product.IdProduct,
+                        PcioCarro : Product.Precio,
+                        CantProduct : element.CantProduct,
+                        ParcialCarro : Product.Precio * element.CantProduct,
+                        DescArtCarro : Product.NombreProducto,
+                        TalleCarro : Product.Talle
 
-
-
-              const Product = await Products.findOne({IdProduct:newCarrito.DetallePay.IdProductCarro });
-
-          //     newCarrito.DetallePay.forEach(element => {
- 
-                
-            
-          // });
+                      });
+                } 
 
     await newCarrito.save();
 
