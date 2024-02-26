@@ -6,7 +6,7 @@ import Pay from "../models/Pay.models.js";
 //BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA
 async function GetProduct(req, res) {
   try {
-    const { IdUsu,cid,pid} = req.body;
+    const { IdUsu} = req.body;
     const Carro = await Shoppings.find({ IdUsu: IdUsu});
 
     if (Carro) {
@@ -24,15 +24,15 @@ async function GetProduct(req, res) {
 //CREA UN CARRITO DE CERO PARA UN USUARIO, PONIENDO EL PRIMER ARTICULO QUE HAYA SELECCIONADO
 async function PostProduct(req, res) {
   try {
-    const {IdUsu, CantProduct, FechaCarro, 
-      TipoPagoCarro, pid
+    const {IdUsu, CantProduct, FechaCarro, IdProduct
     } = req.body;
     
-      const Product = await Products.findOne({_id:pid });
-      const IdProductCarro = Product.IdProduct
+      const Product = await Products.findOne({IdProduct:IdProduct });
+      const pid = Product._id;
+      const IdProductCarro = Product.IdProduct;
       let ParcialProduct = Product.Precio * CantProduct;
       let TotalCarro = ParcialProduct
-      const newCarrito = await Shoppings.create({IdUsu, FechaCarro,TipoPagoCarro, TotalCarro });
+      const newCarrito = await Shoppings.create({IdUsu, FechaCarro, TotalCarro });
 
       newCarrito.DetalleCarro.push({
         pid,
@@ -56,16 +56,17 @@ async function PostProduct(req, res) {
 async function PushProduct(req , res) {
   try {
 
-      const {CantProduct, pid, cid, id} = req.body;
+      const {CantProduct, IdProduct, IdUsu} = req.body;
 
-          const Product = await Products.findOne({_id:pid });
+          const Product = await Products.findOne({IdProduct:IdProduct });
+          const pid = Product._id;
           const IdProductCarro = Product.IdProduct;
           if (Product.Stock > CantProduct) {
                    
             const ParcialProduct = Product.Precio * CantProduct;
-            const Cart = await Shoppings.findOne({_id:cid});
-            // let Total=Cart.TotalCarro+ParcialProduct;
-            const CC = Cart.DetalleCarro.find(elemento => {return elemento.pid == pid});
+            const Cart = await Shoppings.findOne({IdUsu:IdUsu});
+            const cid = Cart._id;
+            const CC = Cart.DetalleCarro.find(elemento => {return elemento.IdProductCarro == IdProduct});
 
             if(CC!=undefined){
               let Total=Cart.TotalCarro-CC.ParcialProduct+ParcialProduct;
@@ -96,9 +97,11 @@ async function PushProduct(req , res) {
 //PARA ELIMINAR UN ARTICULO DE UN CARRITO EXISTENTE
 async function DeleteProduct(req, res) {
   try {
-    const {pid, cid} = req.body;
+    const {pid, IdUsu} = req.body;
 
-          const Cart = await Shoppings.findOne({_id:cid});
+          const Cart = await Shoppings.findOne({IdUsu:IdUsu});
+          const cid = Cart._id;
+
           const CC = Cart.DetalleCarro.find(elemento => {return elemento.pid == pid});
           let Total=Cart.TotalCarro-CC.ParcialProduct;
 
@@ -127,8 +130,9 @@ async function DeleteShopping(req, res) {
 //PARA CONFIRMAR EL CARRITO EXISTENTE
 async function ConfirmaShopping(req, res) {
   try {
-    const {cid, IdUsu, FechaPay, TipoPagoPay, pid} = req.body;
+    const {cid, FechaPay, TipoPagoPay} = req.body;
     const BackShopping = await Shoppings.findOne({_id:cid})
+    const IdUsu = BackShopping.IdUsu
     const BackDetalleCarro = BackShopping.DetalleCarro
     const newCarrito = await Pay.create({ IdUsu,
                                           FechaPay,
@@ -151,7 +155,7 @@ async function ConfirmaShopping(req, res) {
                 } 
 
     await newCarrito.save();
-
+    const dele = await Shoppings.findByIdAndDelete(cid)
     return res.status(200).json({
     ok: true,
     data: newCarrito,
