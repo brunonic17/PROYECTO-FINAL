@@ -7,10 +7,24 @@ import Pay from "../models/Pay.models.js";
 async function GetProduct(req, res) {
   try {
     const { IdUsu} = req.body;
-    const Carro = await Shoppings.find({ IdUsu: IdUsu});
+    const Cart = await Shoppings.find({ IdUsu: IdUsu});
 
-    if (Carro) {
-      res.status(200).send({ status: "OK", data: Carro });
+    if (Cart) {
+      const BackCart = Cart.DetalleCarro
+      let Total=Cart.TotalCarro;
+      for (let i = 0; i < BackCart.length; i++) {
+        const element = BackCart[i];
+        const Product = await Products.findOne({IdProduct:element.IdProductCarro});
+        if (Product.Exist < element.CantProduct) {
+          BackCart[i].CantProduct = 0
+          Cart.TotalCarro = Cart.TotalCarro - BackCart[i].ParcialProduct
+          BackCart[i].ParcialProduct = 0
+        }
+      }
+
+      
+
+      res.status(200).send({ status: "OK", data: Cart });
     } else {
       res
         .status(500)
@@ -21,32 +35,71 @@ async function GetProduct(req, res) {
   }
 }
 
-//CREA UN CARRITO DE CERO PARA UN USUARIO, PONIENDO EL PRIMER ARTICULO QUE HAYA SELECCIONADO
+//CREA - AGREGA PRODUCTOS - MODIFICA LA CANTIDAD DE UN PRODUCTO EN UN CARRITO PARA UN USUARIO
 async function PostProduct(req, res) {
   try {
     const {IdUsu, CantProduct, FechaCarro, IdProduct
     } = req.body;
-    
-      const Product = await Products.findOne({IdProduct:IdProduct });
+
+    const Product = await Products.findOne({IdProduct:IdProduct });
+    const Cart = await Shoppings.findOne({IdUsu:IdUsu});
+
+    // CONSULTO SI EL STOCK ES SUFICIENTE PARA LA CANTIDAD INGRESADA 
+    if (Product.Stock > CantProduct) {  
+      // STOCK SUFICIENTE
       const pid = Product._id;
       const IdProductCarro = Product.IdProduct;
-      let ParcialProduct = Product.Precio * CantProduct;
-      let TotalCarro = ParcialProduct
-      const newCarrito = await Shoppings.create({IdUsu, FechaCarro, TotalCarro });
+      const ParcialProduct = Product.Precio * CantProduct;
 
-      newCarrito.DetalleCarro.push({
-        pid,
-        IdProductCarro,
-        CantProduct,
-        ParcialProduct 
-      });
+      // BUSCO SI EXISTE UN CARRITO PARA UN USUARIO
+      if (Cart) {
+        // PARA AGREGAR O MODIFICAR ARTICULOS EN EL CARRITO EXISTENTE DE UN USUARIO
+          const cid = Cart._id;
+          const CC = Cart.DetalleCarro.find(elemento => {return elemento.IdProductCarro == IdProduct});
+          //BUSCO SI YA EXISTE EL ARTICULO EN EL CARRITO
+          if(CC!=undefined){
+            //MODIFICA LA CANTIDAD DEL ARTICULO EXISTENTE EN EL CARRITO
+            let Total=Cart.TotalCarro-CC.ParcialProduct+ParcialProduct;
+            const modific= await Shoppings.updateOne(
+              { _id:cid, 'DetalleCarro.pid': pid },
+              { TotalCarro:Total, $set: { 'DetalleCarro.$.ParcialProduct':ParcialProduct,'DetalleCarro.$.CantProduct':CantProduct} },
+              { arrayFilters: [{ 'DetalleCarro.pid': pid }] }
+            );    
+            res.status(200).send({status:'ok', data: "Se Modifico el Articulo" })
+          }else{
+            //NO EXISTE EL ARTICULO - AGREGA EL ARTICULO EN EL CARRITO
+            let Total=Cart.TotalCarro+ParcialProduct;
+            const modifica= await Shoppings.updateOne(
+            { _id: cid },
+            { TotalCarro:Total,
+              $push: { DetalleCarro: { pid, CantProduct,ParcialProduct, IdProductCarro } } }
+            );  
+            res.status(200).send({status:'ok', data: "Se Agrego el Articulo al Carrito" })
+          }       
+      } else {
+        // CREA EL CARRITO PONIENDO EL PRIMER ARTICULO SELECCIONADO
+        const Product = await Products.findOne({IdProduct:IdProduct });
+        const pid = Product._id;
+        const IdProductCarro = Product.IdProduct;
+        let ParcialProduct = Product.Precio * CantProduct;
+        let TotalCarro = ParcialProduct
+        const newCarrito = await Shoppings.create({IdUsu, FechaCarro, TotalCarro });
 
-      await newCarrito.save();
+        newCarrito.DetalleCarro.push({
+          pid,
+          IdProductCarro,
+          CantProduct,
+          ParcialProduct 
+        });
 
-      return res.status(200).json({
-      ok: true,
-      data: newCarrito,
-      });
+        await newCarrito.save();
+
+        return res.status(500).send({ status: "ERR", data: "Carrito Creado con Exito" });
+      }  
+    } else {
+      res.status(200).send({ status: "ERR", data: "Cantidad Superior a la Existencia" });
+    }     
+
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
@@ -110,7 +163,7 @@ async function DeleteProduct(req, res) {
             { TotalCarro:Total, $pull: { DetalleCarro: { pid} }},
             { arrayFilters: [{ 'DetalleCarro.pid': pid }] })
  
-            res.status(200).send({status:'ok', data: "Se Elmino" })
+            res.status(200).send({status:'ok', data: "Se Elmino el Articulo del Carrito" })
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
@@ -121,7 +174,7 @@ async function DeleteShopping(req, res) {
   try {
     const {cid} = req.body;
         const dele = await Shoppings.findByIdAndDelete(cid)
-        res.status(200).send({status:'ok', data: "Se Elmino" })
+        res.status(200).send({status:'ok', data: "Se Elmino el Carrito" })
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
