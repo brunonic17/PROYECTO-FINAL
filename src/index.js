@@ -11,7 +11,7 @@ dotenv.config();
 import connect from './database/database';
 
 import  AdminRoutes  from './routes/AdminRoutes.js'; 
-import  AdminRoutes1  from './routes/AdminRoutes1.js'; 
+
 import { ConectCloudinary } from './controllers/CloudinaryProductController.js';
 
 const APP_PORT=3000;
@@ -46,8 +46,8 @@ try {
   app.use(express.urlencoded({ extended: true }));
 
   
-  // app.use( '/api' ,AdminRoutes );
-  app.use( '/api' ,AdminRoutes1 );
+
+  app.use( '/api' ,AdminRoutes );
 
 
 
