@@ -147,7 +147,7 @@ async function UploadEspecificaciones(req,res){
 async function UpdateProduct(req, res) {
     try {
 
-      const {NombreProductob,
+      const {
              NombreProducto,
              Precio,
              Detalle,
@@ -213,7 +213,7 @@ async function UpdatePicture(req, res) {
  async function DeleteProduct(req,res){
     try{
         const { id }= req.body
-        const ProductDelete= await SchemaProduct1.findByIdAndDelete(id)
+        const ProductDelete= await SchemaProduct.findByIdAndDelete(id)
 
         if(ProductDelete){
             return res.status(200).send({status:"ok",data:"Se elimino el prducto"})
@@ -227,10 +227,11 @@ async function UpdatePicture(req, res) {
 // Endpoint para Borrar objeto de Especificaciones
 async function DeleteEspecificaciones(req,res){
   try {
-    const {id, id2} = req.body;
+    const {id,id2 } = req.body;
 
 
-          const DeleteEspecificaciones= await Especificaciones.findByIdAndDelete(id);
+          const DeleteEspecificaciones= await Especificaciones.findByIdAndDelete(id2);
+          await SchemaProduct.findByIdAndUpdate(id,{$pull:{Especificaiones:{_id:id2}}});
        if(DeleteEspecificaciones){
             res.status(200).send({status:'ok', data: "Se Elimino" })}
   } catch (err) {
