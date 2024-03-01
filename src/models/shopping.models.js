@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import productModel from '../models/ProductModel1.js';
+// import productModel from '../models/ProductModel1.js';
+import productModel from '../models/ProductModel.js';
 
 mongoose.pluralize(null);
 
@@ -20,7 +21,7 @@ const SchemaShoppings = new mongoose.Schema ({
 
 
 
-SchemaShoppings.pre('find', function() {
+SchemaShoppings.pre('findOne', function() {
     this.populate(       
         {path:'DetalleCarro.pid',model:productModel})
 });

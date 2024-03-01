@@ -1,30 +1,40 @@
 import Shoppings from "../models/shopping.models.js";
 import Products from "../models/ProductModel1.js";
 import Pay from "../models/Pay.models.js";
+import SchemaProduct from '../models/ProductModel.js';
+import Especificaciones from '../models/EspecificacionesModel.js';
 
 
 //BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA
-async function GetProduct(req, res) {
-  try {
+async function GetProductShoping(req, res) { //A
+  try {  
     const { IdUsu} = req.body;
-    const Cart = await Shoppings.find({ IdUsu: IdUsu});
-
+    const Cart = await Shoppings.findOne({ IdUsu: IdUsu});
+    let Band = "Su Carrito Actualizado"
     if (Cart) {
       const BackCart = Cart.DetalleCarro
-      let Total=Cart.TotalCarro;
-      for (let i = 0; i < BackCart.length; i++) {
+
+      // let Total=Cart.TotalCarro;
+      for (let i = 0; i < BackCart.length; i++) {//B
         const element = BackCart[i];
         const Product = await Products.findOne({IdProduct:element.IdProductCarro});
-        if (Product.Exist < element.CantProduct) {
-          BackCart[i].CantProduct = 0
-          Cart.TotalCarro = Cart.TotalCarro - BackCart[i].ParcialProduct
-          BackCart[i].ParcialProduct = 0
+        if (Product.Stock < element.CantProduct) {
+          Band = "Se Actualizaron Productos en el Carrito por Falta de Stock"
+          element.CantProduct = Product.Stock
+          Cart.TotalCarro = Cart.TotalCarro - element.ParcialProduct
+          element.ParcialProduct = element.CantProduct * Product.Precio
+          Cart.TotalCarro = Cart.TotalCarro + element.ParcialProduct
         }
       }
+      Cart.DetalleCarro = BackCart.filter(element => element.CantProduct != 0)
 
+      const modifica= await Shoppings.updateOne(
+        {  IdUsu: IdUsu },
+        { TotalCarro:Cart.TotalCarro, DetalleCarro: Cart.DetalleCarro },
+        )
+
+      res.status(200).json({ status: "OK", data: Band, Cart });
       
-
-      res.status(200).send({ status: "OK", data: Cart });
     } else {
       res
         .status(500)
@@ -36,7 +46,7 @@ async function GetProduct(req, res) {
 }
 
 //CREA - AGREGA PRODUCTOS - MODIFICA LA CANTIDAD DE UN PRODUCTO EN UN CARRITO PARA UN USUARIO
-async function PostProduct(req, res) {
+async function PostProduct(req, res) { //A
   try {
     const {IdUsu, CantProduct, FechaCarro, IdProduct
     } = req.body;
@@ -181,8 +191,8 @@ async function DeleteShopping(req, res) {
 }
 
 //PARA CONFIRMAR EL CARRITO EXISTENTE
-async function ConfirmaShopping(req, res) {
-  try {
+async function ConfirmaShopping(req, res) { //D
+  try { //A
     const {cid, FechaPay, TipoPagoPay} = req.body;
     const BackShopping = await Shoppings.findOne({_id:cid})
     const IdUsu = BackShopping.IdUsu
@@ -195,7 +205,8 @@ async function ConfirmaShopping(req, res) {
                                         });
                 for (let i = 0; i < BackDetalleCarro.length; i++) {
                       const element = BackDetalleCarro[i];
-                      const Product = await Products.findOne({IdProduct:element.IdProductCarro});
+                      const Product = await Products.findOne({IdProduct:element.IdProductCarro}); //B
+                      
                       newCarrito.DetallePay.push({
                         IdProductCarro : Product.IdProduct,
                         PcioCarro : Product.Precio,
@@ -205,8 +216,11 @@ async function ConfirmaShopping(req, res) {
                         TalleCarro : Product.Talle
 
                       });
-                } 
-
+                      const NewStock= Product.Stock-element.CantProduct  //C
+                      await Products.findOneAndUpdate({IdProduct:element.IdProductCarro},{Stock:NewStock})
+                       
+              } 
+              
     await newCarrito.save();
     const dele = await Shoppings.findByIdAndDelete(cid)
     return res.status(200).json({
@@ -219,4 +233,102 @@ async function ConfirmaShopping(req, res) {
 }
 
 
-export {GetProduct, PostProduct, PushProduct, DeleteProduct, DeleteShopping, ConfirmaShopping}
+// Endpoint para Crear productos
+async function CreateProducts(req,res){
+  try{
+      const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria}= req.body;
+     
+     
+
+      const NewProduct= await SchemaProduct.create({
+          IdProduct,
+          NombreProducto,
+          Precio,
+          Detalle,
+          UltimoPrecio,
+          Categoria,
+          Especificaciones:[]
+      });
+
+      
+
+      if(NewProduct){
+      res
+      .status(200)
+      .send({ status: 'OK', data: NewProduct });}
+  }catch(err){
+      res.status(500).send({ status: 'ERR', data: err.message });
+  }
+}
+
+// Endpoint para Crear Especificaciones
+async function CreateEspecificaciones(req,res){
+try{
+    const { IdProduct,
+      Color,
+      CodColor,
+      Talle,
+      Stock,
+      Fecha,
+      CodProducto,
+      id}= req.body;
+   
+   
+    const NewProduct= await Especificaciones.create({
+      Color,
+      CodColor,
+      Talle,
+      Stock,
+      Fecha,
+      CodProducto
+    });
+  
+    const Especific= await Especificaciones.findOne({Color:Color,Talle:Talle});
+
+    await SchemaProduct.updateOne({_id:id},
+                                  {$push:{Especificaciones:{id:Especific._id}}});
+    
+
+    if(NewProduct){
+
+    res
+    .status(200)
+    .send({ status: 'OK', data: NewProduct });}
+}catch(err){
+    res.status(500).send({ status: 'ERR', data: err.message });
+}
+}
+
+// Endpoint para obtener producto completo
+async function GetCompleteProduct(req,res){
+  const {id}=req.body
+      try{
+  
+        const Product= await SchemaProduct.findById(id);
+  
+          res.status(200).send({ status: 'OK', data:Product})
+      }catch(err){
+          res.status(500).send({ status: 'ERR', data: err.message });
+      }
+  };
+  // Endpoint para obtener productos especifico
+  async function GetProduct(req,res){
+    const {id,id2}=req.body
+        try{
+    
+          const Product= await SchemaProduct.findById({_id:id});
+          const ProductDeta = await Especificaciones.findById({_id:id2})
+          // const Product= await SchemaProduct.findById({_id:id,Especificaciones:{_id:id2}});
+                
+
+            res.status(200).send({ status: 'OK', data:Product, ProductDeta})
+        }catch(err){
+            res.status(500).send({ status: 'ERR', data: err.message });
+        }
+    };
+  
+  
+
+export {GetProductShoping, PostProduct, PushProduct, DeleteProduct, DeleteShopping,
+         ConfirmaShopping, CreateProducts, CreateEspecificaciones, GetCompleteProduct, GetProduct}
+
