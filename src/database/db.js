@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import { configEnv } from "../config.js";
 
-
-
 export const connectDb = async () => {
   try {
     await mongoose.connect(configEnv.dbConfig.host);

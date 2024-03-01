@@ -2,6 +2,8 @@ import { Hash } from "../helpers/password.helpers.js";
 import Users from "../models/user.models.js";
 import { createAccesToken } from "../libs/jwt.js";
 import bcrypt from "bcrypt";
+import  jwt  from "jsonwebtoken";
+import { tokenSecret } from "../config.js";
 
 
 //registrarse
@@ -14,6 +16,7 @@ export const register = async (req, res) => {
       return res.status(409).json({msg: 'El email ya esta en uso'});
     
     const passwordHash = await Hash(password);
+    
     const newUser = new Users({
       nameUser,
       email,
@@ -23,7 +26,10 @@ export const register = async (req, res) => {
     const userSaved = await newUser.save();
     
     const token = await createAccesToken({ id: userSaved._id });
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: true
+    });
 
     res.status(200).json({
       messaje: "registrado existosamnete",
@@ -31,6 +37,7 @@ export const register = async (req, res) => {
         id: userSaved._id,
         nameUser: userSaved.nameUser,
         email: userSaved.email,
+        rule: userSaved.rule
       },
     });
   } catch (error) {
@@ -55,7 +62,10 @@ export const register = async (req, res) => {
         return res.status(400).send({ message: "Usuario o contrasena erronea" });
       //token
       const token = await createAccesToken({ id: userFound._id });
-      res.cookie("token", token);
+      res.cookie("token", token, {
+        sameSite: "none",
+        secure: true
+      });
   
       //(dto)
   
@@ -78,7 +88,7 @@ export const register = async (req, res) => {
      res.send(message.error);
     }
   };
-//Rutas Protegidas
+
  export const profile = async (req, res) => {
     const userfound = await Users.findById(req.user.id)
     
@@ -90,3 +100,24 @@ export const register = async (req, res) => {
       email: userfound.email,
     })
 }
+
+export const verifyToken = async (req, res) => {
+ const { token } = req.cookies
+
+ if (!token) return res.status(400).send({message: "No hay Token"});
+
+  jwt.verify(token, tokenSecret, async (err,user) => {
+    if (err) return res.status(400).send({message:"Token Invalido"});
+    const userFound = await Users.findById(user.id)
+    if(!userFound) return res.status(400).send({message:'Usuario No Encontrado'})
+
+    return res.status(200).json({
+      id:userFound._id,
+      nameUser: userFound.nameUser,
+      email: userFound.email,
+      rule: userFound.rule,
+      data: "Verificacion Exitosa"
+    })
+  })
+  }
+
