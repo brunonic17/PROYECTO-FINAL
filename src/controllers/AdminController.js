@@ -41,17 +41,17 @@ const {id,id2}=req.body
     }
 };
 
-
-
-
-
 // Endpoint para Crear productos
 async function CreateProducts(req,res){
     try{
         const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria}= req.body;
        
-       
+       const Product=await SchemaProduct.findOne({IdProduct:IdProduct,NombreProducto:NombreProducto})
 
+
+       if(Product){
+           res.status(500).send({ status: 'ERR', data:"EL producto ya existe" });
+       }else{
         const NewProduct= await SchemaProduct.create({
             IdProduct,
             NombreProducto,
@@ -67,7 +67,7 @@ async function CreateProducts(req,res){
         if(NewProduct){
         res
         .status(200)
-        .send({ status: 'OK', data: NewProduct });}
+        .send({ status: 'OK', data: NewProduct });}}
     }catch(err){
         res.status(500).send({ status: 'ERR', data: err.message });
     }
@@ -163,7 +163,7 @@ async function UpdateProduct(req, res) {
         Precio:Precio,
         Detalle:Detalle,
         UltimoPrecio:UltimoPrecio,
-        });
+        },{new:true});
 
     
   
@@ -255,7 +255,7 @@ async function DeleteImage(req,res){
 
           await  DeleteEspecificaciones.save();
  
-            res.status(200).send({status:'ok', data: "Se Elimino" })
+    res.status(200).send({status:'ok', data: "Se Elimino" })
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
