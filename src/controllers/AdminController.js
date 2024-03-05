@@ -110,8 +110,6 @@ async function CreateEspecificaciones(req,res){
   }
 }
 
-
-
 // Endpoint para Modificar Especificaciones
 async function UploadEspecificaciones(req,res){
   try{
@@ -144,7 +142,6 @@ async function UploadEspecificaciones(req,res){
   }catch(err){
       res.status(500).send({ status: 'ERR', data: err.message });
   }}
-
 
 // Endpoint para Modificar Product
 async function UpdateProduct(req, res) {
@@ -210,7 +207,6 @@ async function UpdatePicture(req, res) {
     });
   }
 }
-
 
 // Endpoint para Borrar producto entero
  async function DeleteProduct(req,res){
