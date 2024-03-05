@@ -2,44 +2,47 @@ import SchemaProduct from '../models/ProductModel.js';
 import Especificaciones from '../models/EspecificacionesModel.js';
 import { UploadPicture } from './CloudinaryProductController.js';
 
-// Endpoint para obtener producto completo
+// Endpoint para obtener todos los productos
 async function GetProducts(req,res){
  
-      try{
-  
+  try{
+
         const Product= await SchemaProduct.find();
+
+      res.status(200).send({ status: 'OK', data:Product});
   
-          res.status(200).send({ status: 'OK', data:Product})
-      }catch(err){
-          res.status(500).send({ status: 'ERR', data: err.message });
-      }
-  };
+    
+  }catch(err){
+      res.status(500).send({ status: 'ERR', data: err.message });
+  }
+};
 
 
 // Endpoint para obtener producto completo
  async function GetCompleteProduct(req,res){
-const {id}=req.param
+const {id,id2}=req.body
     try{
 
       const Product= await SchemaProduct.findById(id);
 
+      if(id2){
+       
+       
+       
+        res.status(200).send({ status: 'OK', data:Product.Especificaciones.id(id2)})
+      }else{
         res.status(200).send({ status: 'OK', data:Product})
+      }
+
+
+
     }catch(err){
         res.status(500).send({ status: 'ERR', data: err.message });
     }
 };
-// Endpoint para obtener productos especifico
-async function GetProduct(req,res){
-  const {id,id2}=req.param
-      try{
-  
-        const Product= await SchemaProduct.findOne({_id:id,Especificaciones:{id:id2}});
-  
-          res.status(200).send({ status: 'OK', data:Prod})
-      }catch(err){
-          res.status(500).send({ status: 'ERR', data: err.message });
-      }
-  };
+
+
+
 
 
 // Endpoint para Crear productos
@@ -261,7 +264,6 @@ async function DeleteImage(req,res){
 
  export {GetProducts,
         GetCompleteProduct,
-         GetProduct,
          CreateProducts,
          CreateEspecificaciones,
          UploadEspecificaciones,

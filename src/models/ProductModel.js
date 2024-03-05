@@ -23,6 +23,11 @@ const SchemaPoduct = new mongoose.Schema({
         this.populate({ path: 'Especificaciones.id', model: Especificaciones });
     });
 
+    SchemaPoduct.pre('findOne', function() {
+        this.populate({ path: 'Especificaciones.id', model: Especificaciones });
+    });
+
+
     SchemaPoduct.pre('find', function() {
         this.populate({ path: 'Especificaciones.id', model: Especificaciones });
     });

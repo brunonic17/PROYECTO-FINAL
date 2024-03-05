@@ -2,7 +2,6 @@ import { Router } from "express";
 import  multer  from "multer";
 import {GetProducts,
   GetCompleteProduct,
-  GetProduct,
   CreateProducts,
   CreateEspecificaciones,
   UploadEspecificaciones,
@@ -20,9 +19,8 @@ const upload = multer({
     storage: multer.diskStorage({}),
   }).fields([{ name: "file", maxCount: 4 }]);
 
-router.get('/Admin',GetProducts)
-router.get('/Admin/:id',GetCompleteProduct);
-router.get('/Admin/Product/:id/:id2',GetProduct);
+router.get('/Admin',GetProducts);
+router.get('/Admin/Product',GetCompleteProduct)
 router.post('/Admin',CreateProducts);
 router.post('/Admin/Especificaciones',CreateEspecificaciones);
 router.put('/Admin/Push',UploadEspecificaciones);
