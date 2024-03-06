@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 // import productModel from '../models/ProductModel1.js';
 import productModel from '../models/ProductModel.js';
+import Especificaciones from '../models/EspecifcacionesModel1.js'
 
 mongoose.pluralize(null);
 
@@ -11,6 +12,7 @@ const SchemaShoppings = new mongoose.Schema ({
     FechaCarro : {type: "Date"},
     TotalCarro : {type: "Number"},
     DetalleCarro : {  type: [{  pid: mongoose.Schema.Types.ObjectId,
+                                eid: mongoose.Schema.Types.ObjectId,
                                 IdProductCarro: { type: 'number', required: true },
                                 CantProduct: Number,
                                 ParcialProduct: Number
@@ -24,6 +26,11 @@ const SchemaShoppings = new mongoose.Schema ({
 SchemaShoppings.pre('findOne', function() {
     this.populate(       
         {path:'DetalleCarro.pid',model:productModel})
+});
+
+SchemaShoppings.pre('findOne', function() {
+    this.populate(       
+        {path:'DetalleCarro.eid',model:Especificaciones})
 });
 
 

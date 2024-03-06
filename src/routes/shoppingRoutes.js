@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import {GetProductShoping, PostProduct, PushProduct, DeleteProduct, DeleteShopping, ConfirmaShopping,
-         CreateProducts,  CreateEspecificaciones, GetProduct, GetCompleteProduct} from '../controllers/ShoppingController.js'
+         CreateProducts,  CreateEspecificaciones, GetCompleteProduct, GetProducts} from '../controllers/ShoppingController.js'
 
 const router = Router()
 
@@ -18,10 +18,11 @@ router.post('/confirma', ConfirmaShopping);
 
 router.post('/Admin',CreateProducts);
 
+router.get('/Admin',GetProducts);
+
 router.post('/Admin/Especificaciones',CreateEspecificaciones);
 
-router.get('/Admin',GetProduct);
 
-router.get('/Admin/:id',GetCompleteProduct);
+router.get('/Admin/Especificaciones',GetCompleteProduct);
 
 export default router

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Especificaciones from './EspecifcacionesModel1.js';
+import Especificaciones from './EspecificacionesModel.js';
 
 
 mongoose.pluralize(null);
@@ -27,9 +27,6 @@ const SchemaPoduct = new mongoose.Schema({
         this.populate({ path: 'Especificaciones.id', model: Especificaciones });
     });
     
-    SchemaPoduct.pre('findOne', function() {
-        this.populate({ path: 'Especificaciones.id', model: Especificaciones });
-    });
 
 
 

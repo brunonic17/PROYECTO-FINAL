@@ -7,7 +7,6 @@ const collection="Especificaciones"
 
 
 const Especificaciones = new mongoose.Schema({
-                            IdProduct: { type: 'number', required: true },
                             Color:"String",
                             CodColor:"String",
                             Talle:"Number",
