@@ -3,20 +3,28 @@ import mongoose from 'mongoose';
 import shoppingRouter from './routes/shoppingRoutes.js'
 import connect from './database/database.js';
 import bodyParser from 'body-parser';
+import cors from"cors";
 
 const APP_PORT=5050;
 
-const app = express();
+
+
+try {
+  connect()
+  const app = express();
 
   app.use(bodyParser.json());
   app.use(
     bodyParser.urlencoded({
       extended: true,
-    })
-  )
-
-try {
-  connect()
+    }));
+    app.use(cors({
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+      optionsSuccessStatus: 204
+  }))
+  app.use(express.json());
   
   
 

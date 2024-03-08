@@ -4,9 +4,9 @@ import {GetProductShoping, PostProduct, PushProduct, DeleteProduct, DeleteShoppi
 
 const router = Router()
 
-router.get('/', GetProductShoping)
+router.get('/:id', GetProductShoping)
 
-router.post('/', PostProduct)
+// router.post('/', PostProduct)
 
 router.patch('/', PushProduct)
 

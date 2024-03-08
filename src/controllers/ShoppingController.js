@@ -8,11 +8,12 @@ import Especificaciones from '../models/EspecifcacionesModel1.js';
 //BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA
 async function GetProductShoping(req, res) { 
   try {  
-    const { IdUsu} = req.body;
-    const Cart = await Shoppings.findOne({ IdUsu: IdUsu});
+    const { id} = req.params;
+   
+    const Cart = await Shoppings.findById(id);
     let Band = "Su Carrito Actualizado"
     if (Cart) {
-      const id=Cart._id
+      const cid=Cart._id
 
       const BackCart = Cart.DetalleCarro
 
@@ -32,7 +33,7 @@ async function GetProductShoping(req, res) {
       Cart.DetalleCarro = BackCart.filter(element => element.CantProduct != 0)
 
       const modifica= await Shoppings.updateOne(
-        {  IdUsu: IdUsu },
+        {  _id: id },
         { TotalCarro:Cart.TotalCarro, DetalleCarro: Cart.DetalleCarro },
         )
 
@@ -41,8 +42,10 @@ async function GetProductShoping(req, res) {
     } else {
       res
         .status(500)
-        .send({ status: "ERR", data: "No Existe Carrito para este Usuario" });
+        .send({ status: "ERR", data: "CUIDADO No Existe Carrito para este Usuario" });
+
     }
+    
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
