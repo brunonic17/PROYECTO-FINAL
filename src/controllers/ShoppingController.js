@@ -54,18 +54,30 @@ async function GetProductShoping(req, res) {
 //CREA - AGREGA PRODUCTOS - MODIFICA LA CANTIDAD DE UN PRODUCTO EN UN CARRITO PARA UN USUARIO
 async function PostProduct(req, res) { 
   try {
-    const {IdUsu, CantProduct, FechaCarro, IdProduct, eid
-    } = req.body;
+    const Parametros={IdUsu:req.body.IdUsu,
+                    CantProduct:req.body.CantProduct,
+                    FechaCarro:req.body.FechaCarro,
+                    IdProduct:req.body.IdProduct,
+                    eid:req.body.eid
+    } 
+    const IdUsu = Parametros.IdUsu;
+    const CantProduct = Parametros.CantProduct;
+    const FechaCarro = Parametros.FechaCarro;
+    const IdProduct = Parametros.IdProduct;
+    const eid = Parametros.eid;
 
+    const Cart = await Shoppings.findOne({IdUsu:IdUsu});
     const Product = await SchemaProduct.findOne({IdProduct:IdProduct});
     const Especi = await Especificaciones.findById(eid);
-    const Cart = await Shoppings.findOne({IdUsu:IdUsu});
+    
+
+
     const pid = Product._id;
     // CONSULTO SI EL STOCK ES SUFICIENTE PARA LA CANTIDAD INGRESADA 
     if (Especi.Stock >= CantProduct) { // STOCK SUFICIENTE
       const IdProductCarro = Product.IdProduct;
       let ParcialProduct = Product.Precio * CantProduct;
-
+      console.log(Especi.Stock)
       // PREGUNTO SI EXISTE UN CARRITO PARA EL USUARIO
       if (Cart) {
         // PARA AGREGAR O MODIFICAR ARTICULOS EN EL CARRITO EXISTENTE DE UN USUARIO
@@ -80,7 +92,7 @@ async function PostProduct(req, res) {
               { TotalCarro:Total, $set: { 'DetalleCarro.$.ParcialProduct':ParcialProduct,'DetalleCarro.$.CantProduct':CantProduct} },
               { arrayFilters: [{ 'DetalleCarro.pid': pid }] }
             );    
-            res.status(200).send({status:'ok', data: "Se Modifico el Articulo" })
+            res.status(200).send({status:'ok', data: modific})
           }else{
             //NO EXISTE EL ARTICULO - AGREGA EL ARTICULO EN EL CARRITO
             let Total=Cart.TotalCarro+ParcialProduct;
@@ -89,13 +101,12 @@ async function PostProduct(req, res) {
             { TotalCarro:Total,
               $push: { DetalleCarro: { pid, eid, CantProduct,ParcialProduct, IdProductCarro } } }
             );  
-            res.status(200).send({status:'ok', data: "Se Agrego el Articulo al Carrito" })
+            res.status(200).send({status:'ok', data: modifica})
           }       
       } else {
         // CREA EL CARRITO PONIENDO EL PRIMER ARTICULO SELECCIONADO
         let TotalCarro = ParcialProduct
         const newCarrito = await Shoppings.create({IdUsu, FechaCarro, TotalCarro });
-
         newCarrito.DetalleCarro.push({
         pid,
         eid,
@@ -105,10 +116,10 @@ async function PostProduct(req, res) {
 
         await newCarrito.save();
 
-        return res.status(500).send({ status: "ERR", data: "Carrito Creado con Exito" });
+        return res.status(200).send({ status: " ok", data: newCarrito});
       }  
     } else {
-      res.status(200).send({ status: "ERR", data: "Cantidad Superior a la Existencia" });
+      res.status(200).send({ status: "OK", data: "Cantidad Superior a la Existencia" });
     }     
 
   } catch (err) {

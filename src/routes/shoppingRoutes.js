@@ -6,7 +6,7 @@ const router = Router()
 
 router.get('/:id', GetProductShoping)
 
-// router.post('/', PostProduct)
+router.post('/', PostProduct)
 
 router.patch('/', PushProduct)
 

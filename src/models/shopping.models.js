@@ -13,7 +13,7 @@ const SchemaShoppings = new mongoose.Schema ({
     TotalCarro : {type: "Number"},
     DetalleCarro : {  type: [{  pid: mongoose.Schema.Types.ObjectId,
                                 eid: mongoose.Schema.Types.ObjectId,
-                                IdProductCarro: { type: 'number', required: true },
+                                // IdProductCarro: { type: 'number', required: true },
                                 CantProduct: Number,
                                 ParcialProduct: Number
                             }], ref: 'products' }  
