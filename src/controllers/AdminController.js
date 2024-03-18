@@ -2,14 +2,42 @@ import SchemaProduct from '../models/ProductModel.js';
 import Especificaciones from '../models/EspecificacionesModel.js';
 import { UploadPicture } from './CloudinaryProductController.js';
 
+
 // Endpoint para obtener todos los productos
 async function GetProducts(req,res){
  
   try{
+    
+  const Product= await SchemaProduct.find();
 
-        const Product= await SchemaProduct.find();
+  res.status(200).send({ status: 'OK', data:Product});
 
-      res.status(200).send({ status: 'OK', data:Product});
+    
+  }catch(err){
+      res.status(500).send({ status: 'ERR', data: err.message });
+  }
+};
+// Endpoint para obtener todos los productos
+async function GetProduct(req,res){
+ 
+  try{
+      const {id}=req.params;
+
+     
+
+       
+  // const Product= await SchemaProduct.find();
+
+  //       res.status(200).send({ status: 'OK', data:Product});
+        
+
+       
+  const Product= await SchemaProduct.findById(id);
+
+  res.status(200).send({ status: 'OK', data:Product});
+
+
+      
   
     
   }catch(err){
@@ -20,14 +48,16 @@ async function GetProducts(req,res){
 
 // Endpoint para obtener producto completo
  async function GetCompleteProduct(req,res){
-const {id,id2}=req.body
+const ids={id:req.body.id,
+           id2:req.body.id2};
+
+          const id=ids.id;
+           const id2=ids.id2;
     try{
 
       const Product= await SchemaProduct.findById(id);
 
       if(id2){
-       
-       
        
         res.status(200).send({ status: 'OK', data:Product.Especificaciones.id(id2)})
       }else{
@@ -44,30 +74,41 @@ const {id,id2}=req.body
 // Endpoint para Crear productos
 async function CreateProducts(req,res){
     try{
-        const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria}= req.body;
-       
-       const Product=await SchemaProduct.findOne({IdProduct:IdProduct,NombreProducto:NombreProducto})
+        // const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria}= req.body;
 
-
-       if(Product){
-           res.status(500).send({ status: 'ERR', data:"EL producto ya existe" });
-       }else{
+      const Prod={ IdProduct: req.body.IdProduct,
+                    NombreProducto : req.body.NombreProducto,
+                    Precio: req.body.Precio,
+                   Detalle:req.body.Detalle,
+                   Categoria:req.body.Categoria,
+                   UltimoPrecio:req.body.UltimoPrecio
+                  };
+              
+            const IdProduct=Prod.IdProduct;
+            const NombreProducto=Prod.NombreProducto;
+            const Precio=Prod.Precio;
+            const Detalle=Prod.Detalle;
+            const UltimoPrecio=Prod.UltimoPrecio;
+            const Categoria=Prod.Categoria;
+      //  if(Product){}
+      //      res.status(500).send({ status: 'ERR', data:"EL producto ya existe" });
+      //  }else{
         const NewProduct= await SchemaProduct.create({
-            IdProduct,
-            NombreProducto,
-            Precio,
-            Detalle,
-            UltimoPrecio,
-            Categoria,
-            Especificaciones:[]
-        });
-
+          IdProduct,
+          NombreProducto,
+          Precio,
+          Detalle,
+          UltimoPrecio,
+          Categoria,
+          Especificaciones:[]
+      });
         
 
         if(NewProduct){
         res
         .status(200)
-        .send({ status: 'OK', data: NewProduct });}}
+        .send({ status: 'OK', data: NewProduct });}
+      // }
     }catch(err){
         res.status(500).send({ status: 'ERR', data: err.message });
     }
@@ -258,7 +299,8 @@ async function DeleteImage(req,res){
 }
 ;
 
- export {GetProducts,
+ export {GetProduct,
+         GetProducts,
         GetCompleteProduct,
          CreateProducts,
          CreateEspecificaciones,

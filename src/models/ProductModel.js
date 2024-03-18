@@ -8,7 +8,7 @@ const collection="Products"
 
 
 const SchemaPoduct = new mongoose.Schema({
-    IdProduct: { type: 'number', required: true },
+    IdProduct: { type:'String', required: true },
     NombreProducto: { type: 'String', required: true },
     Precio: { type: 'number', required:true },
     UltimoPrecio: { type:'number', default:'0' },

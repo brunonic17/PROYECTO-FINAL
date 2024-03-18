@@ -14,7 +14,7 @@ import  AdminRoutes  from './routes/AdminRoutes.js';
 
 import { ConectCloudinary } from './controllers/CloudinaryProductController.js';
 
-const APP_PORT=3002;
+const APP_PORT=3000;
 
 
 
