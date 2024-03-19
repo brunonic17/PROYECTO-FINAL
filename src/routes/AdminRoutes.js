@@ -25,12 +25,12 @@ router.get('/Admin',GetProducts);
 router.post('/Admin/Product',GetCompleteProduct)
 router.post('/Admin',CreateProducts);
 router.post('/Admin/Especificaciones',CreateEspecificaciones);
-router.put('/Admin/Push',UploadEspecificaciones);
-router.put('/Admin/Products',UpdateProduct);
+router.put('/Admin/Especificaciones',UploadEspecificaciones);
+router.put('/Admin/Product',UpdateProduct);
 router.put('/Admin/Picture',[upload],UpdatePicture);
-router.delete('/Admin',DeleteProduct);
+router.delete('/Admin/Product',DeleteProduct);
 router.delete('/Admin/Especificaciones',DeleteEspecificaciones);
-router.delete("/Admin/Image",DeleteImage)
+router.delete("/Admin/Picture",DeleteImage)
 
 
  

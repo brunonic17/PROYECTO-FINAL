@@ -117,14 +117,21 @@ async function CreateProducts(req,res){
 // Endpoint para Crear Especificaciones
 async function CreateEspecificaciones(req,res){
   try{
-      const { Color,
-        CodColor,
-        Talle,
-        Stock,
-        Fecha,
-        CodProducto,
-        id}= req.body;
-     
+      const E= { Color:req.body.Color,
+        CodColor:req.body.CodColor,
+        Talle:req.body.Talle,
+        Stock:req.body.Stock,
+        Fecha:req.body.Fecha,
+        CodProducto:req.body.CodProducto,
+        id:req.body.id};
+
+     const Color=E.Color;
+     const CodColor=E.CodColor;
+     const Talle=E.Talle;
+     const Stock=E.Stock;
+     const Fecha=E.Fecha;
+     const CodProducto=E.CodProducto;
+     const id=E.id;
      
       const NewProduct= await Especificaciones.create({
         Color,
@@ -154,14 +161,25 @@ async function CreateEspecificaciones(req,res){
 // Endpoint para Modificar Especificaciones
 async function UploadEspecificaciones(req,res){
   try{
-      const {Color,
-        CodColor,
-        Talle,
-        Stock,
-        Fecha,
-        CodProducto,
-        id,
-        Estado}= req.body;
+      const New={Color:req.body.Color,
+        CodColor:req.body.CodColor,
+        Talle:req.body.Talle,
+        Stock:req.body.Stock,
+        Fecha:req.body.Fecha,
+        CodProducto:req.body.CodProducto,
+        id:req.body.id,
+        Estado:req.body.Estado};
+
+       const Color=New.Color;
+       const CodColor=New.CodColor;
+       const Talle=New.Talle;
+       const Stock=New.Stock;
+       const Fecha=New.Fecha;
+       const CodProducto=New.CodProducto;
+       const id=New.id;
+       const Estado=New.Estado;
+
+
 
        const Especific=await  Especificaciones.findByIdAndUpdate(id,
         {Color:Color,
@@ -188,12 +206,19 @@ async function UploadEspecificaciones(req,res){
 async function UpdateProduct(req, res) {
     try {
 
-      const {
-             NombreProducto,
-             Precio,
-             Detalle,
-             UltimoPrecio,
-             id} = req.body;
+      const New = {
+             NombreProducto: req.body.NombreProducto,
+             Precio: req.body.Precio,
+             Detalle: req.body.Detalle,
+             UltimoPrecio: req.body.UltimoPrecio,
+             id:req.body.id } ;
+
+        const NombreProducto=New.NombreProducto;
+        const Precio=New.Precio;
+        const Detalle=New.Detalle;
+        const UltimoPrecio=New.UltimoPrecio;
+        const id=New.id;
+
      
       const response = await SchemaProduct.findByIdAndUpdate(id,
         {
@@ -223,7 +248,7 @@ async function UpdatePicture(req, res) {
   try {
     
 
-    const { _id  }= req.body;
+    const _id = req.body._id;
 
   
      const result= await UploadPicture(req.files.file[0])
@@ -252,7 +277,7 @@ async function UpdatePicture(req, res) {
 // Endpoint para Borrar producto entero
  async function DeleteProduct(req,res){
     try{
-        const { id }= req.body
+        const  id = req.body.id
         const ProductDelete= await SchemaProduct.findByIdAndDelete(id)
 
         if(ProductDelete){
@@ -267,11 +292,14 @@ async function UpdatePicture(req, res) {
 // Endpoint para Borrar objeto de Especificaciones
 async function DeleteEspecificaciones(req,res){
   try {
-    const {id,id2 } = req.body;
+    const Delete= {id,
+      id2 } ;
 
+      const id=Delete.id;
+      const id2=Delete.id2;
 
           const DeleteEspecificaciones= await Especificaciones.findByIdAndDelete(id2);
-          await SchemaProduct.findByIdAndUpdate(id,{$pull:{Especificaiones:{_id:id2}}});
+          await SchemaProduct.findByIdAndUpdate(id,{$pull:{Especificaciones:{_id:id2}}});
        if(DeleteEspecificaciones){
             res.status(200).send({status:'ok', data: "Se Elimino" })}
   } catch (err) {
@@ -283,8 +311,11 @@ async function DeleteEspecificaciones(req,res){
 // Endpoint para Borrar objeto de Especificaciones
 async function DeleteImage(req,res){
   try {
-    const {id, id2} = req.body;
+    const Delete= {id,
+      id2 } ;
 
+      const id=Delete.id;
+      const id2=Delete.id2;
 
           const DeleteEspecificaciones= await SchemaProduct.findById(id);
           
