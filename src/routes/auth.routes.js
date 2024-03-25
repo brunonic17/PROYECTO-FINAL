@@ -3,6 +3,7 @@ import {
   login,
   logout,
   register,
+  sendEmail,
   updatePassword,
   verifyToken,
 } from "../controllers/auth.controllers.js";
@@ -15,6 +16,8 @@ const router = Router();
 router.post("/register", validatorAuth, register);
 
 router.post("/login", login);
+
+router.post("/sendEmail", sendEmail);
 
 router.put("/forgotPassword/:id", updatePassword);
 

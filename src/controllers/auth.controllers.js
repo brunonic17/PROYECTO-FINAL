@@ -4,6 +4,7 @@ import { createAccesToken } from "../libs/jwt.js";
 import bcrypt, { hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { tokenSecret } from "../config.js";
+import { Resend } from "resend";
 
 //registrarse
 export const register = async (req, res) => {
@@ -104,7 +105,7 @@ export const profile = async (req, res) => {
     email: userfound.email,
   });
 };
-
+// Verificacion Loguin
 export const verifyToken = async (req, res) => {
   const { token } = req.cookies;
 
@@ -125,6 +126,40 @@ export const verifyToken = async (req, res) => {
     });
   });
 };
+//Envio de correo para reestablecer contraseña
+export const sendEmail = async (req, res) => {
+  const { email } = req.body;
+  const { id, token } = req.params;
+  try {
+    const userFound = await Users.findOne({ email });
+    if (!userFound) return res.status(400).send("El usuario no existe");
+
+    const token = await createAccesToken({ id: userFound._id });
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: true,
+    });
+    //Enviar correo electronico con el link del id y token
+    const resend = new Resend("re_MihMh3ky_9H2e5FLoj8SdhwSB1ah8DNh1");
+
+    (async function () {
+      const { data, error } = await resend.emails.send({
+        from: "Acme <onboarding@resend.dev>",
+        to: [userFound.email],
+        subject: "Reestablecer contraseña",
+        html:`http://localhost:5173/forgotPassword/${userFound._id}/${token}`,
+      });
+
+      if (error) {
+        return console.error({ error });
+      }
+
+      return res.status(200).json({ Status: "Succes" });
+    })();
+  } catch (error) {
+  res.status(400).json({Status: error})
+  }
+};
 //Cambiar Contraseña
 export const updatePassword = async (req, res) => {
   const { password } = req.body;
@@ -140,7 +175,7 @@ export const updatePassword = async (req, res) => {
     userFound.save();
 
     res.status(200).json({
-       userFound
+      userFound,
     });
   } catch (error) {
     console.log(error);
