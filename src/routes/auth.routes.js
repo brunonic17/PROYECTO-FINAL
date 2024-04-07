@@ -19,7 +19,7 @@ router.post("/login", login);
 
 router.post("/sendEmail", sendEmail);
 
-router.put("/forgotPassword/:id/:token", updatePassword);
+router.put("/forgotPassword/:id", updatePassword);
 
 router.post("/logout", logout);
 
