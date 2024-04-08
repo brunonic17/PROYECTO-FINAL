@@ -134,34 +134,36 @@ export const sendEmail = async (req, res) => {
     const userFound = await Users.findOne({ email });
     if (!userFound) return res.status(400).send("El usuario no existe");
 
-    // const token = await createAccesToken({ password: userFound._id });
-    // res.cookie(
-    //   "token",
-    //   token,
-    //   {
-    //     sameSite: "none",
-    //     secure: true,
-    //   },
-    //   {
-    //     expires: "1h", //Tiempo que dura la cookie en el navegador
-    //   }
-    // );
-    // Enviar correo electronico con el link del id y token (cuando usen el token al recargar la pagina se loguea con el usuario!!!!😩)
-    const resend = new Resend("re_MihMh3ky_9H2e5FLoj8SdhwSB1ah8DNh1");
-
-    (async function () {
-      const { data, error } = await resend.emails.send({
-        from: "Acme <onboarding@resend.dev>",
-        to: [userFound.email],
-        subject: "Reestablecer contraseña",
-        html: `http://localhost:5173/forgotPassword/${userFound._id}`,
-      });
-
-      if (error) {
-        return console.error({ error });
+    const token = await createAccesToken({ password: userFound._id });
+    res.cookie(
+      "token",
+      token,
+      {
+        sameSite: "none",
+        secure: true,
+      },
+      {
+        expires: "1h", //Tiempo que dura la cookie en el navegador
       }
-    })();
-    return res.status(200).json({ Status: "Success", User: userFound.email });
+    );
+    // Enviar correo electronico con el link del id y token (cuando usen el token al recargar la pagina se loguea con el usuario!!!!😩)
+    // const resend = new Resend("re_MihMh3ky_9H2e5FLoj8SdhwSB1ah8DNh1");
+
+    // (async function () {
+    //   const { data, error } = await resend.emails.send({
+    //     from: "Acme <onboarding@resend.dev>",
+    //     to: [userFound.email],
+    //     subject: "Reestablecer contraseña",
+    //     html: `http://localhost:5173/forgotPassword/${userFound._id}/${token}`,
+    //   });
+
+    //   if (error) {
+    //     return console.error({ error });
+    //   }
+    // })();
+    return res
+      .status(200)
+      .json({ Status: "Success" });
   } catch (error) {
     res.status(400).json("hay errores");
   }
@@ -169,28 +171,32 @@ export const sendEmail = async (req, res) => {
 //Cambiar Contraseña
 export const updatePassword = async (req, res) => {
   const { password } = req.body;
-  
+  const { id, token } = req.params;
   try {
-    const userFound = await Users.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    // jwt.verify(token, tokenSecret, async (err, user) => {
-    //   if (err) {
-    //     res.status(400).send({ message: "Token Invalido" });
-    //   } else {
+    jwt.verify(token, tokenSecret, async (err, user) => {
+      if (err) {
+        res.status(400).send({ message: "Token Invalido" });
+      } else {
+        const userFound = await Users.findByIdAndUpdate(
+          req.params.id,
+          req.body,
+          {
+            new: true,
+          }
+        );
+        const passwordHash = await Hash(password);
+        userFound.password = passwordHash;
+        userFound.save();
 
-    //   }
-    const passwordHash = await Hash(password);
-    userFound.password = passwordHash;
-    userFound.save();
-
-    res.status(200).json({
-      Status: "Success",
-      User: userFound.email,
-      msg: "password modificado",
+        res.status(200).json({
+          Status: "Success",
+          User: userFound.email,
+          msg: "password modificado",
+        });
+      }
     });
-    // });
   } catch (error) {
     res.status(400).json({ error });
+    console.log(error);
   }
 };
