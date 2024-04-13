@@ -6,6 +6,7 @@ import {
   sendEmail,
   updatePassword,
   verifyToken,
+  profile
 } from "../controllers/auth.controllers.js";
 // import { check } from "express-validator";
 import { validatorAuth } from "../middelwares/auth.validate.js";
@@ -25,10 +26,6 @@ router.post("/logout", logout);
 
 router.get("/verify", verifyToken);
 
-
-
-
-
-// router.get("/profile", authRequired, profile);
+router.get("/profile", authRequired, profile);
 
 export default router;

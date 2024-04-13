@@ -6,6 +6,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouters from "./routes/auth.routes.js";
+import favRouters from "./routes/fav.routes.js";
 import "dotenv/config.js";
 import bodyParser from "body-parser";
 
@@ -29,7 +30,9 @@ try {
   app.use(cookieParser());
   //hola mundo
 
+
   app.use("/api", authRouters);
+  app.use("/api", favRouters);
   
 
   connectDb();

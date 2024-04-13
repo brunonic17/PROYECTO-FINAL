@@ -23,13 +23,13 @@ export const register = async (req, res) => {
       email,
       password: passwordHash,
     });
-    // Save user to the database
+    // Se guarda en la database
     const userSaved = await newUser.save();
 
     const token = await createAccesToken({ id: userSaved._id });
     res.cookie("token", token, {
       sameSite: "none",
-      secure: true,
+      // secure: true,
     });
 
     res.status(200).json({
@@ -41,7 +41,9 @@ export const register = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ status: false, data: error.message });
+    res
+      .status(500)
+      .send({ status: false, data: error.message, data1: "hola eror" });
   }
 };
 //Loguearse
@@ -65,7 +67,7 @@ export const login = async (req, res) => {
     const token = await createAccesToken({ id: userFound._id });
     res.cookie("token", token, {
       sameSite: "none",
-      secure: true,
+      // secure: true,
     });
 
     //(dto)
@@ -92,17 +94,19 @@ export const logout = (req, res) => {
     res.send(message.error);
   }
 };
-
+//perfil del usuario
 export const profile = async (req, res) => {
+
   const userfound = await Users.findById(req.user.id);
 
   if (!userfound)
     return res.status(400).send({ messaje: "usuario no encontrado" });
-
   res.status(200).json({
     id: userfound._id,
     nameUser: userfound.nameUser,
     email: userfound.email,
+    createdAt: userfound.createdAt,
+    updatedAt:  userfound.updatedAt,
   });
 };
 // Verificacion Loguin
@@ -147,23 +151,21 @@ export const sendEmail = async (req, res) => {
       }
     );
     // Enviar correo electronico con el link del id y token (cuando usen el token al recargar la pagina se loguea con el usuario!!!!😩)
-    // const resend = new Resend("re_MihMh3ky_9H2e5FLoj8SdhwSB1ah8DNh1");
+    const resend = new Resend("re_MihMh3ky_9H2e5FLoj8SdhwSB1ah8DNh1");
 
-    // (async function () {
-    //   const { data, error } = await resend.emails.send({
-    //     from: "Acme <onboarding@resend.dev>",
-    //     to: [userFound.email],
-    //     subject: "Reestablecer contraseña",
-    //     html: `http://localhost:5173/forgotPassword/${userFound._id}/${token}`,
-    //   });
+    (async function () {
+      const { data, error } = await resend.emails.send({
+        from: "Acme <onboarding@resend.dev>",
+        to: [userFound.email],
+        subject: "Reestablecer contraseña",
+        html: `http://localhost:5173/forgotPassword/${userFound._id}/${token}`,
+      });
 
-    //   if (error) {
-    //     return console.error({ error });
-    //   }
-    // })();
-    return res
-      .status(200)
-      .json({ Status: "Success" });
+      if (error) {
+        return console.error({ error });
+      }
+    })();
+    return res.status(200).json({ Status: "Success" });
   } catch (error) {
     res.status(400).json("hay errores");
   }
