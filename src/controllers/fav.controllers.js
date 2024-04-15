@@ -2,12 +2,11 @@ import Fav from "../models/fav.models.js";
 // Agregar a favoritos
 export const createFavorites = async (req, res) => {
   try {
-    const { productId, description } = req.body;
+    const { productId } = req.body;
     console.log(req.user);
 
     const newFav = new Fav({
-      productId,
-      description,
+      productId:req.product.id,
       user: req.user.id,
     });
     // Se guarda en la database

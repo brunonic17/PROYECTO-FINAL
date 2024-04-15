@@ -12,10 +12,10 @@ const router = Router();
 
 router.post("/favorites", validatorFav, authRequired, createFavorites);
 
-router.get("/pageFavorites", authRequired, getFavorites);
+router.get("/Favorites", authRequired, getFavorites);
 
-router.get("/pageFavorite/:id", authRequired, getFavorite);
+router.get("/Favorites/:id", authRequired, getFavorite);
 
-router.delete("/pageFavorite/:id", authRequired, deleteFavorite);
+router.delete("/Favorites/ :id", authRequired, deleteFavorite);
 
 export default router;
