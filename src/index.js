@@ -7,6 +7,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouters from "./routes/auth.routes.js";
 import favRouters from "./routes/fav.routes.js";
+import productsRouters from "./routes/products.routes.js";
 import "dotenv/config.js";
 import bodyParser from "body-parser";
 
@@ -33,6 +34,7 @@ try {
 
   app.use("/api", authRouters);
   app.use("/api", favRouters);
+  app.use("/api", productsRouters);
   
 
   connectDb();
@@ -41,5 +43,5 @@ try {
     console.log(`Servidor corriendo en port: ${configEnv.appPort.port}`);
   });
 } catch (error) {
-  console.log(`ERROR al inicializar backend: ${err.message}`);
+  console.log(`ERROR al inicializar backend: ${error.message}`);
 }
