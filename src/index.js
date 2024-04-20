@@ -5,7 +5,7 @@ import connect from './database/database.js';
 import bodyParser from 'body-parser';
 import cors from"cors";
 
-const APP_PORT=5050;
+const APP_PORT=5000;
 
 
 

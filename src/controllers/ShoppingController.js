@@ -9,18 +9,21 @@ import Especificaciones from '../models/EspecifcacionesModel1.js';
 async function GetProductShoping(req, res) { 
   try {  
     const { id} = req.params;
+
    
     const Cart = await Shoppings.findById(id);
+   
     let Band = "Su Carrito Actualizado"
     if (Cart) {
       const cid=Cart._id
 
       const BackCart = Cart.DetalleCarro
-
+      console.log(BackCart);
       let Total=Cart.TotalCarro;
       for (let i = 0; i < BackCart.length; i++) {//B
         const element = BackCart[i];
-        const Product = await SchemaProduct.findOne({IdProduct:element.IdProductCarro});
+        console.log(element);
+        const Product = await SchemaProduct.findOne({_id:element.pid});
         const Especi = await Especificaciones.findById(element.eid);
         if (Especi.Stock < element.CantProduct) {
           Band = "Se Actualizaron Productos en el Carrito por Falta de Stock"
@@ -71,12 +74,12 @@ async function PostProduct(req, res) {
     const Especi = await Especificaciones.findById(eid);
     
 
-
+    console.log(Cart.IdUsu);
     const pid = Product._id;
     // CONSULTO SI EL STOCK ES SUFICIENTE PARA LA CANTIDAD INGRESADA 
     if (Especi.Stock >= CantProduct) { // STOCK SUFICIENTE
       const IdProductCarro = Product.IdProduct;
-      let ParcialProduct = Product.Precio * CantProduct;
+      
       console.log(Especi.Stock)
       // PREGUNTO SI EXISTE UN CARRITO PARA EL USUARIO
       if (Cart) {
@@ -86,37 +89,36 @@ async function PostProduct(req, res) {
           //BUSCO SI YA EXISTE EL ARTICULO EN EL CARRITO
           if(CC!=undefined){
             //MODIFICA LA CANTIDAD DEL ARTICULO EXISTENTE EN EL CARRITO
-            let Total=Cart.TotalCarro-CC.ParcialProduct+ParcialProduct;
+            
             const modific= await Shoppings.updateOne(
               { _id:cid, 'DetalleCarro._id': CC._id },
-              { TotalCarro:Total, $set: { 'DetalleCarro.$.ParcialProduct':ParcialProduct,'DetalleCarro.$.CantProduct':CantProduct} },
+              { $set: { 'DetalleCarro.$.CantProduct':CantProduct} },
               { arrayFilters: [{ 'DetalleCarro.pid': pid }] }
             );    
-            res.status(200).send({status:'ok', data: modific})
+            res.status(200).send({status:'ok', data: await Shoppings.findById(cid)})
           }else{
             //NO EXISTE EL ARTICULO - AGREGA EL ARTICULO EN EL CARRITO
-            let Total=Cart.TotalCarro+ParcialProduct;
-            const modifica= await Shoppings.updateOne(
+            
+            const modific= await Shoppings.updateOne(
             { _id: cid },
-            { TotalCarro:Total,
-              $push: { DetalleCarro: { pid, eid, CantProduct,ParcialProduct, IdProductCarro } } }
+            { 
+              $push: { DetalleCarro: { pid, eid, CantProduct, IdProductCarro } } }
             );  
-            res.status(200).send({status:'ok', data: modifica})
+            res.status(200).send({status:'ok', data: await Shoppings.findById(cid)})
           }       
       } else {
         // CREA EL CARRITO PONIENDO EL PRIMER ARTICULO SELECCIONADO
-        let TotalCarro = ParcialProduct
-        const newCarrito = await Shoppings.create({IdUsu, FechaCarro, TotalCarro });
-        newCarrito.DetalleCarro.push({
+        
+        const modific = await Shoppings.create({IdUsu, FechaCarro });
+        modific.DetalleCarro.push({
         pid,
         eid,
         IdProductCarro,
-        CantProduct,
-        ParcialProduct });
+        CantProduct});
 
-        await newCarrito.save();
+        await modific.save();
 
-        return res.status(200).send({ status: " ok", data: newCarrito});
+        return res.status(200).send({ status: " ok", data: modific});
       }  
     } else {
       res.status(200).send({ status: "OK", data: "Cantidad Superior a la Existencia" });
@@ -194,7 +196,10 @@ async function PushProduct(req , res) {
 //PARA ELIMINAR UN ARTICULO DE UN CARRITO EXISTENTE
 async function DeleteProduct(req, res) {
   try {
-    const {IdUsu, eid} = req.body;
+    const Product = {IdUsu:req.body.IdUsu, eid:req.body.eid};
+
+    const IdUsu = Product.IdUsu;
+    const eid = Product.eid;
 
           const Cart = await Shoppings.findOne({IdUsu:IdUsu});
           const cid = Cart._id;
@@ -227,9 +232,17 @@ async function DeleteShopping(req, res) {
 }
 
 //PARA CONFIRMAR EL CARRITO EXISTENTE
-async function ConfirmaShopping(req, res) { //D
+async function ConfirmaShopping(req, res) { 
   try { 
-    const {cid, FechaPay, TipoPagoPay} = req.body;
+    const PayShopping = {cid:req.body.cid, FechaPay:req.body.FechaPay, TipoPagoPay:req.body.TipoPagoPay};
+    
+    const cid = PayShopping.cid;
+    const FechaPay = PayShopping.FechaPay;
+    const TipoPagoPay = PayShopping.TipoPagoPay;
+
+
+
+
     const BackShopping = await Shoppings.findById(cid);
     
     if (BackShopping) {
