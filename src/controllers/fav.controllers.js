@@ -2,23 +2,19 @@ import Fav from "../models/fav.models.js";
 // Agregar a favoritos
 export const createFavorites = async (req, res) => {
   try {
-    const { product } = req.body;
-
-    console.log(req.user);
-
+console.log(req.body)
     const newFav = new Fav({
-      product,
-      // productIdFav: req.productIdFav.id,
-      user: req.user.id,
+      product: req.body.product,
+      user: req.body.user,
     });
     // Se guarda en la database
     const favSaved = await newFav.save();
 
     res.status(200).json({
-      favSaved,
+      newFav,
     });
   } catch (error) {
-    res.status(400).send({ data: error.message, msg: "soy el error" });
+    res.status(400).send({ data: error.message });
   }
 };
 // Pagina de favoritos

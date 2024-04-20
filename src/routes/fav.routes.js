@@ -10,9 +10,9 @@ import { validatorFav } from "../middelwares/validate.fav.js";
 
 const router = Router();
 
-router.post("/favorites",validatorFav, authRequired, createFavorites);
+router.post("/favorites",validatorFav,  createFavorites);
 
-router.get("/pageFavorites",  authRequired, getFavorites);
+router.get("/pageFavorites", authRequired, getFavorites);
 
 router.get("/pageFavorites/:id", authRequired, getFavorite);
 
