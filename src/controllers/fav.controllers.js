@@ -11,7 +11,7 @@ console.log(req.body)
     const favSaved = await newFav.save();
 
     res.status(200).json({
-      newFav,
+      favSaved,
     });
   } catch (error) {
     res.status(400).send({ data: error.message });
@@ -21,7 +21,8 @@ console.log(req.body)
 export const getFavorites = async (req, res) => {
   const fav = await Fav.find({
     user: req.user.id,
-  }).populate("user");
+  })
+  .populate("user");
   res.status(200).json(fav);
 };
 // Pagina de del producto
