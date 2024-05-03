@@ -29,7 +29,7 @@ export const register = async (req, res) => {
     const token = await createAccesToken({ id: userSaved._id });
     res.cookie("token", token, {
       sameSite: "none",
-      // secure: true,
+      secure: true,
     });
 
     res.status(200).json({
@@ -43,7 +43,7 @@ export const register = async (req, res) => {
     console.log(error);
     res
       .status(500)
-      .send({ status: false, data: error.message, data1: "hola eror" });
+      .send({ status: false, data: error.message });
   }
 };
 //Loguearse
@@ -62,12 +62,12 @@ export const login = async (req, res) => {
     if (!isMatch)
       return res
         .status(400)
-        .send({ message: "Usuario o contrasena erroneaaaaa" });
+        .send({ message: "Usuario o contrasena erronea" });
     //token
     const token = await createAccesToken({ id: userFound._id });
     res.cookie("token", token, {
       sameSite: "none",
-      // secure: true,
+      secure: true,
     });
 
     //(dto)
