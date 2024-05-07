@@ -2,7 +2,6 @@ import Fav from "../models/fav.models.js";
 // Agregar a favoritos
 export const createFavorites = async (req, res) => {
   const { product, user } = req.body;
-  
 
   try {
     // Verificamos si el usuario ya tiene este producto en sus favoritos
@@ -28,7 +27,7 @@ export const createFavorites = async (req, res) => {
 // Pagina de favoritos
 export const getFavorites = async (req, res) => {
   try {
-    const fav = await Fav.find({user:req.user.id});
+    const fav = await Fav.find({ user: req.user.id });
     res.status(200).json(fav);
   } catch (error) {
     res.status(400).json(error);
@@ -54,7 +53,7 @@ export const deleteFavorite = async (req, res) => {
 };
 
 // Pagina de del producto
-export const getFavorite = async (req, res) => {
+export const productCard = async (req, res) => {
   try {
     const fav = await Fav.findById(req.params.id).populate("user");
     if (!fav)

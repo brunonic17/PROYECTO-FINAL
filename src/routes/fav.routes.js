@@ -2,7 +2,7 @@ import { Router } from "express";
 import { authRequired } from "../middelwares/validateToken.js";
 import {
   getFavorites,
-  getFavorite,
+  productCard,
   deleteFavorite,
   createFavorites,
 } from "../controllers/fav.controllers.js";
@@ -14,7 +14,7 @@ router.post("/favorites", validatorFav, createFavorites);
 
 router.get("/pageFavorites", authRequired, getFavorites);
 
-router.get("/pageFavorites/:id", getFavorite);
+// router.get("/productCard/:id",authRequired, productCard);
 
 router.delete("/pageFavorites/:id", deleteFavorite);
 

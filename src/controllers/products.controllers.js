@@ -10,3 +10,13 @@ export const GetProducts = async (req, res) => {
     res.status(500).send({ status: "ERR", data: err.message });
   }
 };
+export const productCard = async (req, res) => {
+  try {
+    const product = await SchemaProduct.findById(req.params.id);
+    if (!product)
+      return res.status(404).json({ message: "producto no encontrado" });
+    res.json(product);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
