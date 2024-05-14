@@ -249,10 +249,14 @@ async function UpdatePicture(req, res) {
     
 
     const _id = req.body._id;
+    const picture=req.files.file[0];
 
-  
-     const result= await UploadPicture(req.files.file[0])
-    
+  console.log(req.body);
+  console.log(picture);
+
+    const result= await UploadPicture(picture);
+  console.log(result);
+
       const secure_url = result.secure_url;
      
    const response = await SchemaProduct.findById(_id);

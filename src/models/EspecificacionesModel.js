@@ -9,7 +9,7 @@ const collection="Especificaciones"
 const Especificaciones = new mongoose.Schema({
                             Color:"String",
                             CodColor:"String",
-                            Talle:"Number",
+                            Talle:"String",
                             Stock:"Number",
                             Fecha:"date",
                             CodProducto:"String",

@@ -9,8 +9,8 @@ function ConectCloudinary (CloudN,ApiK,ApiS){
 
 
    function UploadPicture(req,res){
-        const {path}=req
-
+        const {path}=req;
+        console.log(path);
         const result= cloudinary.uploader.upload(path,{
              resource_type: "image",
            });
