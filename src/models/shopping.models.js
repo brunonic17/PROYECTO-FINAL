@@ -10,10 +10,10 @@ const Collections1 = "Shoppings";
 const SchemaShoppings = new mongoose.Schema ({ 
     IdUsu : {type:"String", required: true},
     FechaCarro : {type: "Date"},
-    TotalCarro : {type: "Number"},
     DetalleCarro : {  type: [{  pid: mongoose.Schema.Types.ObjectId,
                                 eid: mongoose.Schema.Types.ObjectId,
-                                IdProductCarro: { type: 'number', required: true },
+                                IdProductCarro: { type: 'number' },
+                                IdArtCarro: Number,
                                 CantProduct: Number,
                             }], ref: 'products' }  
 })

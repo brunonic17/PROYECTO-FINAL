@@ -1,10 +1,12 @@
 import { Router } from 'express'
 import {GetProductShoping, PostProduct, PushProduct, DeleteProduct, DeleteShopping, ConfirmaShopping,
-         CreateProducts,  CreateEspecificaciones, GetCompleteProduct, GetProducts} from '../controllers/ShoppingController.js'
+         CreateProducts,  CreateEspecificaciones, GetCompleteProduct, GetProducts,GetShopingByIdUsu} from '../controllers/ShoppingController.js'
 
 const router = Router()
 
 router.get('/:id', GetProductShoping)
+
+router.post('/IdUsu',GetShopingByIdUsu)
 
 router.post('/', PostProduct)
 

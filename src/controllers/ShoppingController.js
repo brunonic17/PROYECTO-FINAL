@@ -8,9 +8,7 @@ import Especificaciones from '../models/EspecifcacionesModel1.js';
 //BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA
 async function GetProductShoping(req, res) { 
   try {  
-    const { id} = req.params;
-
-   
+    const {id} = req.params;
     const Cart = await Shoppings.findById(id);
    
     let Band = "Su Carrito Actualizado"
@@ -19,7 +17,7 @@ async function GetProductShoping(req, res) {
 
       const BackCart = Cart.DetalleCarro
       console.log(BackCart);
-      let Total=Cart.TotalCarro;
+      // let Total=Cart.TotalCarro;
       for (let i = 0; i < BackCart.length; i++) {//B
         const element = BackCart[i];
         console.log(element);
@@ -28,16 +26,13 @@ async function GetProductShoping(req, res) {
         if (Especi.Stock < element.CantProduct) {
           Band = "Se Actualizaron Productos en el Carrito por Falta de Stock"
           element.CantProduct = Especi.Stock
-          Cart.TotalCarro = Cart.TotalCarro - element.ParcialProduct
-          element.ParcialProduct = element.CantProduct * Product.Precio
-          Cart.TotalCarro = Cart.TotalCarro + element.ParcialProduct
         }
       }
       Cart.DetalleCarro = BackCart.filter(element => element.CantProduct != 0)
 
       const modifica= await Shoppings.updateOne(
         {  _id: id },
-        { TotalCarro:Cart.TotalCarro, DetalleCarro: Cart.DetalleCarro },
+        {DetalleCarro: Cart.DetalleCarro },
         )
 
       res.status(200).json({ status: "OK", data: Band, Cart });
@@ -54,9 +49,33 @@ async function GetProductShoping(req, res) {
   }
 }
 
+
+async function GetShopingByIdUsu(req, res) { 
+  try {  
+
+    const Cart = await Shoppings.findOne({IdUsu: req.body.IdUsu});
+ 
+if(Cart){
+      res.status(200).json({ status: "OK", data:  Cart });
+      
+    } else {
+      res
+        .status(500)
+        .send({ status: "ERR", data: "CUIDADO No Existe Carrito para este Usuario" });
+
+    }
+    
+  } catch (err) {
+    res.status(500).send({ status: "ERR", data: err.message });
+  }
+}
+
+
+
 //CREA - AGREGA PRODUCTOS - MODIFICA LA CANTIDAD DE UN PRODUCTO EN UN CARRITO PARA UN USUARIO
 async function PostProduct(req, res) { 
   try {
+
     const Parametros={IdUsu:req.body.IdUsu,
                     CantProduct:req.body.CantProduct,
                     FechaCarro:req.body.FechaCarro,
@@ -73,14 +92,12 @@ async function PostProduct(req, res) {
     const Product = await SchemaProduct.findOne({IdProduct:IdProduct});
     const Especi = await Especificaciones.findById(eid);
     
-
-    console.log(Cart.IdUsu);
     const pid = Product._id;
+    const IdArtCarro = Especi.CodArt;
     // CONSULTO SI EL STOCK ES SUFICIENTE PARA LA CANTIDAD INGRESADA 
     if (Especi.Stock >= CantProduct) { // STOCK SUFICIENTE
-      const IdProductCarro = Product.IdProduct;
-      
-      console.log(Especi.Stock)
+      const IdProductCarro = IdProduct;
+
       // PREGUNTO SI EXISTE UN CARRITO PARA EL USUARIO
       if (Cart) {
         // PARA AGREGAR O MODIFICAR ARTICULOS EN EL CARRITO EXISTENTE DE UN USUARIO
@@ -102,7 +119,7 @@ async function PostProduct(req, res) {
             const modific= await Shoppings.updateOne(
             { _id: cid },
             { 
-              $push: { DetalleCarro: { pid, eid, CantProduct, IdProductCarro } } }
+              $push: { DetalleCarro: { pid, eid, IdProductCarro, IdArtCarro, CantProduct } } }
             );  
             res.status(200).send({status:'ok', data: await Shoppings.findById(cid)})
           }       
@@ -114,6 +131,7 @@ async function PostProduct(req, res) {
         pid,
         eid,
         IdProductCarro,
+        IdArtCarro,
         CantProduct});
 
         await modific.save();
@@ -206,11 +224,11 @@ async function DeleteProduct(req, res) {
 
           const CC = Cart.DetalleCarro.find(elemento => {return elemento.eid._id == eid});
           console.log(CC)
-          let Total=Cart.TotalCarro-CC.ParcialProduct;
+         
 
           const modifica= await Shoppings.updateOne(
             { _id: cid , "DetalleCarro.eid":eid},
-            { TotalCarro:Total, $pull: { DetalleCarro: { eid} }},
+            { $pull: { DetalleCarro: { eid} }},
             { arrayFilters: [{ 'DetalleCarro.pid': eid }] })
  
             res.status(200).send({status:'ok', data: "Se Elmino el Articulo del Carrito" })
@@ -234,11 +252,14 @@ async function DeleteShopping(req, res) {
 //PARA CONFIRMAR EL CARRITO EXISTENTE
 async function ConfirmaShopping(req, res) { 
   try { 
-    const PayShopping = {cid:req.body.cid, FechaPay:req.body.FechaPay, TipoPagoPay:req.body.TipoPagoPay};
+
+    console.log(req.body)
+    const PayShopping = {cid:req.body.cid, FechaPay:req.body.FechaPay, TipoPagoPay:req.body.TipoPagoPay,TotalCarro:req.body.TotalCarro};
     
     const cid = PayShopping.cid;
     const FechaPay = PayShopping.FechaPay;
     const TipoPagoPay = PayShopping.TipoPagoPay;
+    const TotalCarro=PayShopping.TotalCarro
 
 
 
@@ -250,17 +271,18 @@ async function ConfirmaShopping(req, res) {
       const BackDetalleCarro = BackShopping.DetalleCarro
       const newCarrito2 = await SchemaPago.create({ IdUsu,
                                             FechaCarro: BackShopping.FechaCarro,
-                                            TotalCarro : BackShopping.TotalCarro,
+                                            TotalCarro :TotalCarro,
                                             DetalleCarro: [] });
       const newCarrito = await Pay.create({ IdUsu,
                                             FechaPay,
-                                            TotalPay : BackShopping.TotalCarro,
+                                            TotalPay : TotalCarro,
                                             TipoPagoPay,
                                             DetallePay: [] });
                   for (let i = 0; i < BackDetalleCarro.length; i++) {
                         const eid = BackDetalleCarro[i].eid;
                         const element = BackDetalleCarro[i];
-                        const Product = await SchemaProduct.findOne({IdProduct:element.IdProductCarro});
+                        const Product = await SchemaProduct.findOne({IdProduct:element.pid.IdProduct});
+                        console.log(Product)
                         const Especi = await Especificaciones.findById(eid);
 
                         newCarrito2.DetalleCarro.push({
@@ -268,7 +290,7 @@ async function ConfirmaShopping(req, res) {
                           eid: element.eid,
                           IdProductCarro: Product.IdProduct,
                           CantProduct: element.CantProduct,
-                          ParcialProduct: element.ParcialProduct
+                          ParcialProduct:  Product.Precio * element.CantProduct
                         })
                         
                         newCarrito.DetallePay.push({
@@ -398,5 +420,5 @@ async function GetProducts(req,res){
 
 
 export {GetProductShoping, PostProduct, PushProduct, DeleteProduct, DeleteShopping,
-         ConfirmaShopping, CreateProducts, CreateEspecificaciones, GetCompleteProduct, GetProducts}
+         ConfirmaShopping, CreateProducts, CreateEspecificaciones, GetCompleteProduct, GetProducts,GetShopingByIdUsu}
 

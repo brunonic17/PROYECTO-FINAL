@@ -7,12 +7,12 @@ const collection="Especificaciones"
 
 
 const Especificaciones = new mongoose.Schema({
+                            IdProductEspeci:"Number",
+                            CodArt:"Number",
                             Color:"String",
-                            CodColor:"String",
                             Talle:"Number",
                             Stock:"Number",
                             Fecha:"date",
-                            CodProducto:"String",
                             Estado:{type:"String",enum:['Alta','Baja'],default:'Alta'}}
    
     );
