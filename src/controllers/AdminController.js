@@ -251,11 +251,11 @@ async function UpdatePicture(req, res) {
     const _id = req.body._id;
     const picture=req.files.file[0];
 
-  console.log(req.body);
-  console.log(picture);
+  // console.log(req.body);
+  // console.log(picture);
 
     const result= await UploadPicture(picture);
-  console.log(result);
+  // console.log(result);
 
       const secure_url = result.secure_url;
      
