@@ -11,7 +11,7 @@ export const GetProducts = async (req, res) => {
   }
 };
 export const productCard = async (req, res) => {
-  console.log(req.params.id)
+ 
   try {
     const product = await SchemaProduct.findById(req.params.id);
     if (!product)

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-// import Especificaciones from './EspecificacionesModel.js';
+import Especificaciones from '../models/Especificaciones.js';
 
 
 mongoose.pluralize(null);
@@ -15,22 +15,22 @@ const SchemaPoduct = new mongoose.Schema({
     Detalle: { type: 'String', required: true },
     Categoria:{ type: 'String', required: true },
     UrlImagen:[{type: 'String'}],  // es un array de strings;
-    // Especificaciones:{type:[{id:mongoose.Schema.Types.ObjectId}], ref:'Especificaciones'}
+    Especificaciones:{type:[{id:mongoose.Schema.Types.ObjectId}], ref:'Especificaciones'}
    
     });
 
-    // SchemaPoduct.pre('findById', function() {
-    //     this.populate({ path: 'Especificaciones.id', model: Especificaciones });
-    // });
+    SchemaPoduct.pre('findById', function() {
+        this.populate({ path: 'Especificaciones.id', model: Especificaciones });
+    });
 
-    // SchemaPoduct.pre('findOne', function() {
-    //     this.populate({ path: 'Especificaciones.id', model: Especificaciones });
-    // });
+    SchemaPoduct.pre('findOne', function() {
+        this.populate({ path: 'Especificaciones.id', model: Especificaciones });
+    });
 
 
-    // SchemaPoduct.pre('find', function() {
-    //     this.populate({ path: 'Especificaciones.id', model: Especificaciones });
-    // });
+    SchemaPoduct.pre('find', function() {
+        this.populate({ path: 'Especificaciones.id', model: Especificaciones });
+    });
     
 
 
