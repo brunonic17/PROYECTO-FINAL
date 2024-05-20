@@ -82,7 +82,6 @@ async function PostProduct(req, res) {
                     IdProduct:req.body.IdProduct,
                     eid:req.body.eid
     } 
-    const IdUsu = Parametros.IdUsu;
     const CantProduct = Parametros.CantProduct;
     const FechaCarro = Parametros.FechaCarro;
     const IdProduct = Parametros.IdProduct;
