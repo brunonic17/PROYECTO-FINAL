@@ -13,6 +13,7 @@ const Especificaciones = new mongoose.Schema({
                             Stock:"Number",
                             Fecha:"date",
                             CodProducto:"String",
+                            _IdProduct:"String",
                             Estado:{type:"String",enum:['Alta','Baja'],default:'Alta'}}
    
     );

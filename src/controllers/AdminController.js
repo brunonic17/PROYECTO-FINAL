@@ -23,23 +23,10 @@ async function GetProduct(req,res){
   try{
       const {id}=req.params;
 
-     
-
-       
-  // const Product= await SchemaProduct.find();
-
-  //       res.status(200).send({ status: 'OK', data:Product});
-        
-
-       
   const Product= await SchemaProduct.findById(id);
 
   res.status(200).send({ status: 'OK', data:Product});
 
-
-      
-  
-    
   }catch(err){
       res.status(500).send({ status: 'ERR', data: err.message });
   }
@@ -131,7 +118,7 @@ async function CreateEspecificaciones(req,res){
      const Stock=E.Stock;
      const Fecha=E.Fecha;
      const CodProducto=E.CodProducto;
-     const id=E.id;
+     const _IdProduct=E.id;
      
       const NewProduct= await Especificaciones.create({
         Color,
@@ -139,10 +126,11 @@ async function CreateEspecificaciones(req,res){
         Talle,
         Stock,
         Fecha,
-        CodProducto
+        CodProducto,
+        _IdProduct
       });
     
-      const Especific= await Especificaciones.findOne({Color:Color,Talle:Talle});
+      const Especific= await Especificaciones.findOne({Color:Color,Talle:Talle,_IdProduct:_IdProduct});
 
       await SchemaProduct.updateOne({_id:id},
                                     {$push:{Especificaciones:{id:Especific._id}}});
