@@ -6,7 +6,7 @@ import Especificaciones from '../models/EspecifcacionesModel1.js';
 
 
 //BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA
-async function GetProductShoping(req, res) { 
+async function GetProductShoping(req, res) { //usar
   try {  
     const {id} = req.params;
     const Cart = await Shoppings.findById(id);
@@ -77,20 +77,21 @@ async function PostProduct(req, res) {
   try {
 
     const Parametros={IdUsu:req.body.IdUsu,
-                    CantProduct:req.body.CantProduct,
+                    CantProduct:req.body.cantidad,
                     FechaCarro:req.body.FechaCarro,
                     IdProduct:req.body.IdProduct,
                     eid:req.body.eid
     } 
+    const IdUsu = Parametros.IdUsu;
     const CantProduct = Parametros.CantProduct;
     const FechaCarro = Parametros.FechaCarro;
     const IdProduct = Parametros.IdProduct;
     const eid = Parametros.eid;
-
+console.log(CantProduct)
     const Cart = await Shoppings.findOne({IdUsu:IdUsu});
     const Product = await SchemaProduct.findOne({IdProduct:IdProduct});
     const Especi = await Especificaciones.findById(eid);
-    
+    console.log(Especi)
     const pid = Product._id;
     const IdArtCarro = Especi.CodArt;
     // CONSULTO SI EL STOCK ES SUFICIENTE PARA LA CANTIDAD INGRESADA 
@@ -138,7 +139,7 @@ async function PostProduct(req, res) {
         return res.status(200).send({ status: " ok", data: modific});
       }  
     } else {
-      res.status(200).send({ status: "OK", data: "Cantidad Superior a la Existencia" });
+      res.status(500).send({ status: "err", data: "Cantidad Superior a la Existencia" });
     }     
 
   } catch (err) {

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import ProductsModels from "../models/products.models.js";
+import ProductsModels from "../models/ProductModel.js";
 mongoose.pluralize(null);
 
 const collection = "Favorites";
