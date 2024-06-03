@@ -5,49 +5,60 @@ import SchemaProduct from '../models/ProductModel.js';
 import Especificaciones from '../models/EspecifcacionesModel1.js';
 
 
-//BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA
-async function GetProductShoping(req, res) { //usar
-  try {  
-    const {id} = req.params;
-    const Cart = await Shoppings.findById(id);
-   
-    let Band = "Su Carrito Actualizado"
-    if (Cart) {
-      const cid=Cart._id
+//BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA-
+export const GetProductShoping = async (req, res) => {
 
-      const BackCart = Cart.DetalleCarro
-      console.log(BackCart);
-      // let Total=Cart.TotalCarro;
-      for (let i = 0; i < BackCart.length; i++) {//B
-        const element = BackCart[i];
-        console.log(element);
-        const Product = await SchemaProduct.findOne({_id:element.pid});
-        const Especi = await Especificaciones.findById(element.eid);
-        if (Especi.Stock < element.CantProduct) {
-          Band = "Se Actualizaron Productos en el Carrito por Falta de Stock"
-          element.CantProduct = Especi.Stock
-        }
-      }
-      Cart.DetalleCarro = BackCart.filter(element => element.CantProduct != 0)
-
-      const modifica= await Shoppings.updateOne(
-        {  _id: id },
-        {DetalleCarro: Cart.DetalleCarro },
-        )
-
-      res.status(200).json({ status: "OK", data: Band, Cart });
-      
-    } else {
-      res
-        .status(500)
-        .send({ status: "ERR", data: "CUIDADO No Existe Carrito para este Usuario" });
-
-    }
-    
-  } catch (err) {
-    res.status(500).send({ status: "ERR", data: err.message });
+  try {
+    const ShoppingSave = await Shoppings.find({id: req.body.IdUsu});
+    res.status(200).json(ShoppingSave);
+  } catch (error) {
+    res.status(400).json(error);
+    console.log(error);
   }
-}
+};
+// async function GetProductShoping(req, res) { //usar
+//   try {  
+//     const {id} = req.params;
+//     // const Cart = await Shoppings.findById(id);
+//     const Cart = await Shoppings.find();
+   
+//     let Band = "Su Carrito Actualizado"
+//     if (Cart) {
+//       const cid=Cart._id
+
+//       const BackCart = Cart.DetalleCarro
+//       console.log(BackCart);
+//       // let Total=Cart.TotalCarro;
+//       for (let i = 0; i < BackCart.length; i++) {//B
+//         const element = BackCart[i];
+//         console.log(element);
+//         const Product = await SchemaProduct.findOne({_id:element.pid});
+//         const Especi = await Especificaciones.findById(element.eid);
+//         if (Especi.Stock < element.CantProduct) {
+//           Band = "Se Actualizaron Productos en el Carrito por Falta de Stock"
+//           element.CantProduct = Especi.Stock
+//         }
+//       }
+//       Cart.DetalleCarro = BackCart.filter(element => element.CantProduct != 0)
+
+//       const modifica= await Shoppings.updateOne(
+//         {  _id: id },
+//         {DetalleCarro: Cart.DetalleCarro },
+//         )
+
+//       res.status(200).json({ status: "OK", data: Band, Cart });
+      
+//     } else {
+//       res
+//         .status(500)
+//         .send({ status: "ERR", data: "CUIDADO No Existe Carrito para este Usuario" });
+
+//     }
+    
+//   } catch (err) {
+//     res.status(500).send({ status: "ERR", data: err.message });
+//   }
+// }
 
 
 async function GetShopingByIdUsu(req, res) { 
@@ -74,8 +85,9 @@ if(Cart){
 
 //CREA - AGREGA PRODUCTOS - MODIFICA LA CANTIDAD DE UN PRODUCTO EN UN CARRITO PARA UN USUARIO
 async function PostProduct(req, res) { 
+ 
   try {
-
+    console.log(req.body)
     const Parametros={IdUsu:req.body.IdUsu,
                     CantProduct:req.body.cantidad,
                     FechaCarro:req.body.FechaCarro,
@@ -419,6 +431,6 @@ async function GetProducts(req,res){
 }
 
 
-export {GetProductShoping, PostProduct, PushProduct, DeleteProduct, DeleteShopping,
+export {PostProduct, PushProduct, DeleteProduct, DeleteShopping,
          ConfirmaShopping, CreateProducts, CreateEspecificaciones, GetCompleteProduct, GetProducts,GetShopingByIdUsu}
 

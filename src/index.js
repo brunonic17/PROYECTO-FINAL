@@ -42,7 +42,7 @@ try {
   app.use("/api", authRouters);
   app.use("/api", favRouters);
   app.use("/api", productsRouters);
-  app.use("/api/carrito", shoppingRouter);
+  app.use("/api", shoppingRouter);
 
   connectDb();
 

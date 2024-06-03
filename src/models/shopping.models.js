@@ -9,6 +9,7 @@ const Collections1 = "Shoppings";
 
 const SchemaShoppings = new mongoose.Schema ({ 
     IdUsu : {type:"String", required: true},
+    // IdUsu: { type: mongoose.Types.ObjectId, ref: "Users", require: true },
     FechaCarro : {type: "Date"},
     DetalleCarro : {  type: [{  pid: mongoose.Schema.Types.ObjectId,
                                 eid: mongoose.Schema.Types.ObjectId,
