@@ -1,31 +1,42 @@
-import { Router } from 'express'
-import {GetProductShoping, PostProduct, PushProduct, DeleteProduct, DeleteShopping, ConfirmaShopping,
-         CreateProducts,  CreateEspecificaciones, GetCompleteProduct, GetProducts,GetShopingByIdUsu} from '../controllers/ShoppingController.js'
+import { Router } from "express";
+import {
+  GetProductShoping,
+  PostProduct,
+  PushProduct,
+  DeleteProduct,
+  DeleteShopping,
+  ConfirmaShopping,
+  CreateProducts,
+  CreateEspecificaciones,
+  GetCompleteProduct,
+  GetProducts,
+  GetShopingByIdUsu,
+} from "../controllers/ShoppingController.js";
+import { authRequired } from "../middelwares/validateToken.js";
 
-const router = Router()
+const router = Router();
 
 // router.get('/:id', GetProductShoping)
-router.get('/carrito', GetProductShoping)
+router.get("/carrito", authRequired,GetProductShoping);
 
-router.post('/IdUsu',GetShopingByIdUsu)
+router.post("/carrito", PostProduct);
 
-router.post('/carrito', PostProduct)
+router.post("/IdUsu", GetShopingByIdUsu);
 
-router.patch('/', PushProduct)
+router.patch("/", PushProduct);
 
-router.delete('/', DeleteProduct);
+router.delete("/", DeleteProduct);
 
-router.delete('/elimina', DeleteShopping);
+router.delete("/elimina", DeleteShopping);
 
-router.post('/confirma', ConfirmaShopping);
+router.post("/confirma", ConfirmaShopping);
 
-router.post('/Admin',CreateProducts);
+router.post("/Admin", CreateProducts);
 
-router.get('/Admin',GetProducts);
+router.get("/Admin", GetProducts);
 
-router.post('/Admin/Especificaciones',CreateEspecificaciones);
+router.post("/Admin/Especificaciones", CreateEspecificaciones);
 
+router.get("/Admin/Especificaciones", GetCompleteProduct);
 
-router.get('/Admin/Especificaciones',GetCompleteProduct);
-
-export default router
+export default router;
