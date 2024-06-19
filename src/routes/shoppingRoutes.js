@@ -17,7 +17,7 @@ import { authRequired } from "../middelwares/validateToken.js";
 const router = Router();
 
 // router.get('/:id', GetProductShoping)
-router.get("/carrito", authRequired,GetProductShoping);
+router.get("/carritos",authRequired, GetProductShoping);
 
 router.post("/carrito", PostProduct);
 
