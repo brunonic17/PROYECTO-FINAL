@@ -30,8 +30,20 @@ const SchemaShoppings = new mongoose.Schema({
 SchemaShoppings.pre("findById", function () {
   this.populate({ path: "DetalleCarro.pid", model: productModel });
 });
+SchemaShoppings.pre("find", function () {
+  this.populate({ path: "DetalleCarro.pid", model: productModel });
+});
+SchemaShoppings.pre("findOne", function () {
+  this.populate({ path: "DetalleCarro.pid", model: productModel });
+});
 
 SchemaShoppings.pre("findById", function () {
+  this.populate({ path: "DetalleCarro.eid", model: Especificaciones });
+});
+SchemaShoppings.pre("find", function () {
+  this.populate({ path: "DetalleCarro.eid", model: Especificaciones });
+});
+SchemaShoppings.pre("findOne", function () {
   this.populate({ path: "DetalleCarro.eid", model: Especificaciones });
 });
 
