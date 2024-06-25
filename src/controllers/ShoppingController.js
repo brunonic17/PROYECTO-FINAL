@@ -9,9 +9,9 @@ import SchemaShoppings from "../models/shopping.models.js";
 export const GetProductShoping = async (req, res) => {
   try {
     const ShoppingSave = await SchemaShoppings.findOne({IdUsu: req.user.id});
-    (ShoppingSave.length === 0) ? res.status(200).json({message: "carrito vacio"})
+    // (ShoppingSave.length === null) ? res.status(200).json({message: "carrito vacio"}):
     // console.log(IdUsu);
-    : res.status(200).json(ShoppingSave);
+     res.status(200).json(ShoppingSave);
     console.log(ShoppingSave)
   } catch (error) {
     res.status(400).json(error);
