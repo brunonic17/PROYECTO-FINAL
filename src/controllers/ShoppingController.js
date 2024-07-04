@@ -8,11 +8,9 @@ import SchemaShoppings from "../models/shopping.models.js";
 //BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA-
 export const GetProductShoping = async (req, res) => {
   try {
-    const ShoppingSave = await SchemaShoppings.findOne({IdUsu: req.user.id});
-    // (ShoppingSave.length === null) ? res.status(200).json({message: "carrito vacio"}):
-    // console.log(IdUsu);
-     res.status(200).json(ShoppingSave);
-    console.log(ShoppingSave)
+    const ShoppingSave = await SchemaShoppings.findOne({ IdUsu: req.user.id });
+    res.status(200).json(ShoppingSave);
+    console.log(ShoppingSave);
   } catch (error) {
     res.status(400).json(error);
     console.log(error);
