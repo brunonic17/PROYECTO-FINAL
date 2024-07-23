@@ -40,7 +40,7 @@ export const register = async (req, res) => {
       msg: "Usuario creado correctamente",
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res
       .status(500)
       .send({ status: false, data: error.message });

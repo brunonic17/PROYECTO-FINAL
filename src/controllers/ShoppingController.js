@@ -6,16 +6,7 @@ import Especificaciones from "../models/EspecifcacionesModel1.js";
 import SchemaShoppings from "../models/shopping.models.js";
 
 //BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA-
-export const GetProductShoping = async (req, res) => {
-  try {
-    const ShoppingSave = await SchemaShoppings.findOne({ IdUsu: req.user.id });
-    res.status(200).json(ShoppingSave);
-    console.log(ShoppingSave);
-  } catch (error) {
-    res.status(400).json(error);
-    console.log(error);
-  }
-};
+
 // async function GetProductShoping(req, res) { //usar
 //   try {
 //     const {id} = req.params;
@@ -59,13 +50,29 @@ export const GetProductShoping = async (req, res) => {
 //     res.status(500).send({ status: "ERR", data: err.message });
 //   }
 // }
+export const GetProductShoping = async (req, res) => {
+  try {
+    const ShoppingSave = await SchemaShoppings.find({ IdUsu: req.user.id });
+    res.status(200).json(ShoppingSave);
+    // console.log(ShoppingSave);
+  } catch (error) {
+    res.status(400).json(error);
+    console.log(error);
+  }
+};
 
 async function GetShopingByIdUsu(req, res) {
+
+  
   try {
-    const Cart = await Shoppings.findOne({ IdUsu: req.body.IdUsu });
+
+   
+    
+    const Cart = await SchemaShoppings.findOne({ IdUsu: req.user.id });
 
     if (Cart) {
-      res.status(200).json({ status: "OK", data: Cart });
+      res.status(200).json(Cart);
+      // res.status(200).json({ status: "OK", data: Cart });
     } else {
       res.status(500).send({
         status: "ERR",
@@ -80,7 +87,7 @@ async function GetShopingByIdUsu(req, res) {
 //CREA - AGREGA PRODUCTOS - MODIFICA LA CANTIDAD DE UN PRODUCTO EN UN CARRITO PARA UN USUARIO
 async function PostProduct(req, res) {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const Parametros = {
       IdUsu: req.body.IdUsu,
       CantProduct: req.body.cantidad,

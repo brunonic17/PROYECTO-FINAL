@@ -1,7 +1,7 @@
 import Fav from "../models/fav.models.js";
 // Agregar a favoritos
 export const createFavorites = async (req, res) => {
-  const { product, user } = req.body;
+  const { product, user, agregado } = req.body;
 
   try {
     // Verificamos si el usuario ya tiene este producto en sus favoritos
@@ -16,6 +16,7 @@ export const createFavorites = async (req, res) => {
     const newFav = new Fav({
       product,
       user,
+      agregado
     });
     // Se guarda en la database
     const favSaved = await newFav.save();
@@ -38,8 +39,9 @@ export const getFavorites = async (req, res) => {
 
 //Borrar el producto de favoritos
 export const deleteFavorite = async (req, res) => {
+  console.log(req.params.id);
   try {
-    const deleteFavorite = await Fav.findByIdAndDelete(req.params.id);
+    const deleteFavorite = await Fav.findOneAndDelete({product:req.params.id});
     if (!deleteFavorite)
       return res
         .status(404)
