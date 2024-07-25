@@ -8,7 +8,7 @@ const favSchema = new mongoose.Schema(
   {
     product: { type: mongoose.Types.ObjectId, ref: "Products", require: true },
     user: { type: mongoose.Types.ObjectId, ref: "Users", require: true },
-    agregado: {type: Boolean, default: true},
+    agregado: {type: Boolean, default: false, require: true},
   },
   {
     timestamps: true,
