@@ -5,9 +5,7 @@ import SchemaProduct from "../models/ProductModel.js";
 import Especificaciones from "../models/EspecifcacionesModel1.js";
 import SchemaShoppings from "../models/shopping.models.js";
 
-//BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA-
-
-// async function GetProductShoping(req, res) { //usar
+// async function GetProductShoping(req, res) {
 //   try {
 //     const {id} = req.params;
 //     // const Cart = await Shoppings.findById(id);
@@ -50,37 +48,34 @@ import SchemaShoppings from "../models/shopping.models.js";
 //     res.status(500).send({ status: "ERR", data: err.message });
 //   }
 // }
-export const GetProductShoping = async (req, res) => {
-  try {
-    const ShoppingSave = await SchemaShoppings.find({ IdUsu: req.user.id });
-    res.status(200).json(ShoppingSave);
-    // console.log(ShoppingSave);
-  } catch (error) {
-    res.status(400).json(error);
-    console.log(error);
-  }
-};
+// export const GetProductShoping = async (req, res) => {
+//   try {
+//     const ShoppingSave = await SchemaShoppings.find({ IdUsu: req.user.id });
+//     res.status(200).json(ShoppingSave);
+//     // console.log(ShoppingSave);
+//   } catch (error) {
+//     res.status(400).json(error);
+//     console.log(error);
+//   }
+// };
+
+//BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA-
 
 async function GetShopingByIdUsu(req, res) {
-
-  
   try {
-
-   
-    
     const Cart = await SchemaShoppings.findOne({ IdUsu: req.user.id });
 
     if (Cart) {
       res.status(200).json(Cart);
-      // res.status(200).json({ status: "OK", data: Cart });
+      // res.status(200).json({ status: "OK", data: "Se encontro el carrito" });
     } else {
-      res.status(500).send({
+      res.status(400).send({
         status: "ERR",
         data: "CUIDADO No Existe Carrito para este Usuario",
       });
     }
   } catch (err) {
-    res.status(500).send({ status: "ERR", data: err.message });
+    res.status(400).send({ status: "ERR", data: err.message });
   }
 }
 

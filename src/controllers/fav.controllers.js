@@ -27,7 +27,7 @@ export const createFavorites = async (req, res) => {
 };
 // Pagina de favoritos
 export const getFavorites = async (req, res) => {
-  console.log(req.body)
+ 
   try {
     const fav = await Fav.find({ user: req.user.id });
     res.status(200).json(fav);
