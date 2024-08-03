@@ -16,7 +16,7 @@ export const createFavorites = async (req, res) => {
     const newFav = new Fav({
       product,
       user,
-      agregado
+      agregado: true
     });
     // Se guarda en la database
     const favSaved = await newFav.save();
@@ -27,19 +27,20 @@ export const createFavorites = async (req, res) => {
 };
 // Pagina de favoritos
 export const getFavorites = async (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
   try {
     const fav = await Fav.find({ user: req.user.id });
     res.status(200).json(fav);
+    // console.log(fav);
   } catch (error) {
     res.status(400).json(error);
-    // console.log(error);
+   
   }
 };
 
 //Borrar el producto de favoritos
 export const deleteFavorite = async (req, res) => {
-  console.log(req.params.id);
+  // console.log(req.params.id);
   try {
     const deleteFavorite = await Fav.findOneAndDelete({product:req.params.id});
     if (!deleteFavorite)

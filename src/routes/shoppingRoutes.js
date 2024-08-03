@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  GetProductShoping,
+  // GetProductShoping,
   PostProduct,
   PushProduct,
   DeleteProduct,
@@ -17,11 +17,12 @@ import { authRequired } from "../middelwares/validateToken.js";
 const router = Router();
 
 // router.get('/:id', GetProductShoping)
-router.get("/carritos",authRequired, GetProductShoping);
+// RUTA QUYE LLEVA AL FRONT LOS PRODUCTOS DEL CARRITO
+router.get("/carritos",authRequired, GetShopingByIdUsu);
 
 router.post("/carrito", PostProduct);
 
-router.post("/IdUsu", GetShopingByIdUsu);
+// router.post("/IdUsu", GetShopingByIdUsu);
 
 router.patch("/", PushProduct);
 
