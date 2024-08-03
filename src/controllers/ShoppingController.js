@@ -67,7 +67,7 @@ async function GetShopingByIdUsu(req, res) {
 
     if (Cart) {
       res.status(200).json(Cart);
-      // res.status(200).json({ status: "OK", data: Cart });
+      // res.status(200).json({ status: "OK", data: "Se encontro el carrito" });
     } else {
       res.status(400).send({
         status: "ERR",
