@@ -43,13 +43,14 @@ const ids={id:req.body.id,
     try{
 
       const Product= await SchemaProduct.findById(id);
+      const ArrayEsp=Product.Especificaciones
+     
+      const Especific=ArrayEsp.find((element)=>element.id._id==id2)
 
-      if(id2){
+    
        
-        res.status(200).send({ status: 'OK', data:Product.Especificaciones.id(id2)})
-      }else{
-        res.status(200).send({ status: 'OK', data:Product})
-      }
+        res.status(200).send({ status: 'OK', data:Especific})
+     
 
 
 
@@ -110,7 +111,7 @@ async function CreateEspecificaciones(req,res){
         Stock:req.body.Stock,
         Fecha:req.body.Fecha,
         CodProducto:req.body.CodProducto,
-        id:req.body.id};
+        _IdProduct:req.body._IdProduct};
 
      const Color=E.Color;
      const CodColor=E.CodColor;
@@ -118,7 +119,7 @@ async function CreateEspecificaciones(req,res){
      const Stock=E.Stock;
      const Fecha=E.Fecha;
      const CodProducto=E.CodProducto;
-     const _IdProduct=E.id;
+     const _IdProduct=E._IdProduct;
      
       const NewProduct= await Especificaciones.create({
         Color,
@@ -132,7 +133,7 @@ async function CreateEspecificaciones(req,res){
     
       const Especific= await Especificaciones.findOne({Color:Color,Talle:Talle,_IdProduct:_IdProduct});
 
-      await SchemaProduct.updateOne({_id:id},
+      await SchemaProduct.updateOne({_id:_IdProduct},
                                     {$push:{Especificaciones:{id:Especific._id}}});
       
 
@@ -284,8 +285,7 @@ async function UpdatePicture(req, res) {
 // Endpoint para Borrar objeto de Especificaciones
 async function DeleteEspecificaciones(req,res){
   try {
-    const Delete= {id,
-      id2 } ;
+    const Delete= req.body ;
 
       const id=Delete.id;
       const id2=Delete.id2;
