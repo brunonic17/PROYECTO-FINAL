@@ -1,7 +1,6 @@
 import express from "express";
 // import mongoose from "mongoose";
 import shoppingRouter from "./routes/shoppingRoutes.js";
-import connect from "./database/database.js";
 import bodyParser from "body-parser";
 import cors from "cors";
 
@@ -17,7 +16,8 @@ import "dotenv/config.js";
 // const APP_PORT=5000;
 
 try {
-  connect();
+  // connect();
+
   const app = express();
 
   app.use(bodyParser.json());

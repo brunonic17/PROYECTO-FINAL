@@ -27,9 +27,12 @@ export const createFavorites = async (req, res) => {
 };
 // Pagina de favoritos
 export const getFavorites = async (req, res) => {
-  console.log(req.body)//comentar una vez coomiteado
+  // console.log(req.body)//comentar una vez coomiteado
+  // console.log(req.user.id)//comentar una vez coomiteado
+
   try {
     const fav = await Fav.find({ user: req.user.id });
+  
     res.status(200).json(fav);
     // console.log(fav);
   } catch (error) {

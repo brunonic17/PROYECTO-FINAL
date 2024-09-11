@@ -26,7 +26,7 @@ router.post("/carrito", PostProduct);
 
 router.patch("/", PushProduct);
 
-router.delete("/", DeleteProduct);
+router.delete("/carrito", DeleteProduct);
 
 router.delete("/elimina", DeleteShopping);
 

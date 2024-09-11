@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { configEnv } from "../config.js";
 
+mongoose.set("strictQuery", true);
+
 export const connectDb = async () => {
   try {
     await mongoose.connect(configEnv.dbConfig.host);
