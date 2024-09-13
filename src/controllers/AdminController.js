@@ -43,9 +43,11 @@ const ids={id:req.body.id,
     try{
 
       const Product= await SchemaProduct.findById(id);
-      const ArrayEsp=Product.Especificaciones
+      const ArrayEsp=Product.Especificaciones;
      
-      const Especific=ArrayEsp.find((element)=>element.id._id==id2)
+      const Especific=ArrayEsp.find(element=>element.id._id==id2);
+
+      
 
     
        
