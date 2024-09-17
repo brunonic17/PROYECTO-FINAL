@@ -230,45 +230,45 @@ async function PushProduct(req, res) {
 
 //PARA ELIMINAR UN ARTICULO DE UN CARRITO EXISTENTE
 async function DeleteProduct(req, res) {
-  try {
-    const DeleteCarProduct = await Fav.findOneAndDelete({product:req.params.id});
-    if (!DeleteCarProduct)
-      return res
-        .status(404)
-        .json({ message: "el producto ya no se encuentra" });
-
-    return res.sendStatus(204);
-    //todo estubo bien no te voy a devolver nada
-    //no devuelva nada(no hay contenido)solo que se haya borrado correctamente
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
   // try {
-  //   const Product = { IdUsu: req.body.IdUsu, eid: req.body.eid };
+  //   const DeleteCarProduct = await Fav.findOneAndDelete({product:req.params.id});
+  //   if (!DeleteCarProduct)
+  //     return res
+  //       .status(404)
+  //       .json({ message: "el producto ya no se encuentra" });
 
-  //   const IdUsu = Product.IdUsu;
-  //   const eid = Product.eid;
-  //    console.log(Product)
-  //   const Cart = await Shoppings.findOne({ IdUsu: IdUsu });
-  //   const cid = Cart._id;
-
-  //   const CC = Cart.DetalleCarro.find((elemento) => {
-  //     return elemento.eid._id == eid;
-  //   });
-  //   console.log(CC);
-
-  //   const modifica = await Shoppings.updateOne(
-  //     { _id: cid, "DetalleCarro.eid": eid },
-  //     { $pull: { DetalleCarro: { eid } } },
-  //     { arrayFilters: [{ "DetalleCarro.pid": eid }] }
-  //   );
-
-  //   res
-  //     .status(200)
-  //     .send({ status: "ok", data: "Se Elmino el Articulo del Carrito" });
-  // } catch (err) {
-  //   res.status(500).send({ status: "ERR", data: err.message });
+  //   return res.sendStatus(204);
+  //   //todo estubo bien no te voy a devolver nada
+  //   //no devuelva nada(no hay contenido)solo que se haya borrado correctamente
+  // } catch (error) {
+  //   return res.status(500).json({ message: error.message });
   // }
+  try {
+    const Product = { IdUsu: req.body.IdUsu, eid: req.body.eid };
+
+    const IdUsu = Product.IdUsu;
+    const eid = Product.eid;
+     console.log(Product)
+    const Cart = await Shoppings.findOne({ IdUsu: IdUsu });
+    const cid = Cart._id;
+
+    const CC = Cart.DetalleCarro.find((elemento) => {
+      return elemento.eid._id == eid;
+    });
+    console.log(CC, "sou yo");
+
+    const modifica = await Shoppings.updateOne(
+      { _id: cid, "DetalleCarro.eid": eid },
+      { $pull: { DetalleCarro: { eid } } },
+      { arrayFilters: [{ "DetalleCarro.pid": eid }] }
+    );
+
+    res
+      .status(200)
+      .send({ status: "ok", data: "Se Elmino el Articulo del Carrito" });
+  } catch (err) {
+    res.status(500).send({ status: "ERR", data: err.message });
+  }
 }
 
 //PARA ELIMINAR UN CARRITO EXISTENTE
