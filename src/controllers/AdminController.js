@@ -152,20 +152,17 @@ async function CreateEspecificaciones(req,res){
 // Endpoint para Modificar Especificaciones
 async function UploadEspecificaciones(req,res){
   try{
-      const New={Color:req.body.Color,
-        CodColor:req.body.CodColor,
-        Talle:req.body.Talle,
+      const New={
+        CodColor:req.body.CodColor, 
         Stock:req.body.Stock,
         Fecha:req.body.Fecha,
         CodProducto:req.body.CodProducto,
         id:req.body.id,
         Estado:req.body.Estado};
 
-       const Color=New.Color;
+       
        const CodColor=New.CodColor;
-       const Talle=New.Talle;
        const Stock=New.Stock;
-       const Fecha=New.Fecha;
        const CodProducto=New.CodProducto;
        const id=New.id;
        const Estado=New.Estado;
@@ -173,11 +170,8 @@ async function UploadEspecificaciones(req,res){
 
 
        const Especific=await  Especificaciones.findByIdAndUpdate(id,
-        {Color:Color,
-        CodColor:CodColor,
-        Talle:Talle,
+        { CodColor:CodColor,
         Stock:Stock,
-        Fecha:Fecha,
         CodProducto:CodProducto,
         Estado:Estado
          },{new:true})
