@@ -230,19 +230,6 @@ async function PushProduct(req, res) {
 
 //PARA ELIMINAR UN ARTICULO DE UN CARRITO EXISTENTE
 async function DeleteProduct(req, res) {
-  // try {
-  //   const DeleteCarProduct = await Fav.findOneAndDelete({product:req.params.id});
-  //   if (!DeleteCarProduct)
-  //     return res
-  //       .status(404)
-  //       .json({ message: "el producto ya no se encuentra" });
-
-  //   return res.sendStatus(204);
-  //   //todo estubo bien no te voy a devolver nada
-  //   //no devuelva nada(no hay contenido)solo que se haya borrado correctamente
-  // } catch (error) {
-  //   return res.status(500).json({ message: error.message });
-  // }
   try {
     const Product = { IdUsu: req.body.IdUsu, eid: req.body.eid };
 
@@ -272,16 +259,17 @@ async function DeleteProduct(req, res) {
 }
 
 //PARA ELIMINAR UN CARRITO EXISTENTE
-async function DeleteShopping(req, res) {
-  try {
-    const { cid } = req.body;
-    const dele = await Shoppings.findByIdAndDelete(cid);
-    // console.log(dele);
-    res.status(200).send({ status: "ok", data: "Se Elmino el Carrito", dele });
-  } catch (err) {
-    res.status(500).send({ status: "ERR", data: err.message });
-  }
-}
+// async function DeleteShopping(req, res) {
+//   try {
+//     const { user } = req.body;
+//     const dele = await Shoppings.findByIdAndDelete(user);
+//     // console.log(dele);
+//     res.status(200).send({ status: "ok", data: "Se Elmino el Carrito", dele });
+//   } catch (err) {
+//     // console.log("estoy aaca");
+//     res.status(500).send({ status: "ERR", data: err.message });
+//   }
+// }
 
 //PARA CONFIRMAR EL CARRITO EXISTENTE
 async function ConfirmaShopping(req, res) {
@@ -456,7 +444,6 @@ export {
   PostProduct,
   PushProduct,
   DeleteProduct,
-  DeleteShopping,
   ConfirmaShopping,
   CreateProducts,
   CreateEspecificaciones,

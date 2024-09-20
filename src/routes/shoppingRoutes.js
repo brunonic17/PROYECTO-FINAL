@@ -4,7 +4,6 @@ import {
   PostProduct,
   PushProduct,
   DeleteProduct,
-  DeleteShopping,
   ConfirmaShopping,
   CreateProducts,
   CreateEspecificaciones,
@@ -12,6 +11,7 @@ import {
   GetProducts,
   GetShopingByIdUsu,
 } from "../controllers/ShoppingController.js";
+import { deleteShopping } from "../controllers/products.controllers.js";
 import { authRequired } from "../middelwares/validateToken.js";
 
 const router = Router();
@@ -28,7 +28,7 @@ router.patch("/", PushProduct);
 
 router.delete("/carrito", DeleteProduct);
 
-router.delete("/elimina", DeleteShopping);
+router.delete("/elimina/:id", deleteShopping);
 
 router.post("/confirma", ConfirmaShopping);
 

@@ -33,6 +33,7 @@ try {
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       credentials: true,
       optionsSuccessStatus: 204,
+      
     })
   );
   app.use(express.json());
