@@ -27,6 +27,19 @@ export const productCard = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+export const GetEspecificaciones = async (req, res) => {
+  const obj = req.body
+  
+  try {
+    const Product = await Especificaciones.find(obj);
+
+    res.status(200).send(Product);
+  } catch (err) {
+    res.status(500).send({ status: "ERR", data: err.message });
+  }
+};
+
 export const GetEspecificaiones = async (req, res) => {
   const obj = new Object();
   obj.Talle = req.body.talle;

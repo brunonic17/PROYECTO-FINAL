@@ -30,7 +30,7 @@ router.delete("/carrito", DeleteProduct);
 
 router.delete("/elimina/:id", deleteShopping);
 
-router.post("/confirma", ConfirmaShopping);
+router.post("/carrito/confirma", ConfirmaShopping);
 
 router.post("/Admin", CreateProducts);
 

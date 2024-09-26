@@ -235,7 +235,7 @@ async function DeleteProduct(req, res) {
 
     const IdUsu = Product.IdUsu;
     const eid = Product.eid;
-     console.log(Product)
+    console.log(Product);
     const Cart = await Shoppings.findOne({ IdUsu: IdUsu });
     const cid = Cart._id;
 
@@ -277,13 +277,13 @@ async function ConfirmaShopping(req, res) {
     console.log(req.body);
     const PayShopping = {
       cid: req.body.cid,
-      FechaPay: req.body.FechaPay,
+
       TipoPagoPay: req.body.TipoPagoPay,
       TotalCarro: req.body.TotalCarro,
     };
 
     const cid = PayShopping.cid;
-    const FechaPay = PayShopping.FechaPay;
+
     const TipoPagoPay = PayShopping.TipoPagoPay;
     const TotalCarro = PayShopping.TotalCarro;
 
@@ -300,7 +300,6 @@ async function ConfirmaShopping(req, res) {
       });
       const newCarrito = await Pay.create({
         IdUsu,
-        FechaPay,
         TotalPay: TotalCarro,
         TipoPagoPay,
         DetallePay: [],
