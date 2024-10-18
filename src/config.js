@@ -13,3 +13,5 @@ export const configEnv = {
 export const salt = 10 ;
 
 export const tokenSecret =  process.env.TOKEN_SECRET;
+
+export const TokenMercadoPago = process.env.MERCADOPAGO_ACCESS_TOKEN

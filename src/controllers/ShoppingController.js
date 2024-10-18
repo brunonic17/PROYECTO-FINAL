@@ -150,7 +150,7 @@ async function PostProduct(req, res) {
       } else {
         // CREA EL CARRITO PONIENDO EL PRIMER ARTICULO SELECCIONADO
 
-        const modific = await Shoppings.create({ IdUsu, FechaCarro });
+        const modific = await Shoppings.create({ IdUsu });
         modific.DetalleCarro.push({
           pid,
           eid,

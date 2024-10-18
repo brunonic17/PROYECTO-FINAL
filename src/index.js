@@ -10,6 +10,7 @@ import { connectDb } from "./database/db.js";
 import cookieParser from "cookie-parser";
 import authRouters from "./routes/auth.routes.js";
 import favRouters from "./routes/fav.routes.js";
+import pagoRouters from "./routes/pago.routes.js";
 import productsRouters from "./routes/products.routes.js";
 import "dotenv/config.js";
 
@@ -44,6 +45,7 @@ try {
   app.use("/api", favRouters);
   app.use("/api", productsRouters);
   app.use("/api", shoppingRouter);
+  app.use("/api", pagoRouters);
 
   connectDb();
 
