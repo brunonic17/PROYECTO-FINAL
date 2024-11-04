@@ -287,7 +287,7 @@ async function DeleteEspecificaciones(req,res){
       const id2=Delete.id2;
 
           const DeleteEspecificaciones= await Especificaciones.findByIdAndDelete(id2);
-          await SchemaProduct.findByIdAndUpdate(id,{$pull:{Especificaciones:{_id:id2}}});
+          await SchemaProduct.findByIdAndUpdate(id,{$pull:{Especificaciones:{id:{_id:id2}}}});
        if(DeleteEspecificaciones){
             res.status(200).send({status:'ok', data: "Se Elimino" })}
   } catch (err) {
