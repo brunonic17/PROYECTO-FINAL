@@ -12,6 +12,7 @@ import authRouters from "./routes/auth.routes.js";
 import favRouters from "./routes/fav.routes.js";
 import pagoRouters from "./routes/pago.routes.js";
 import productsRouters from "./routes/products.routes.js";
+import comentRoutes from "./routes/coment.routes.js";
 import "dotenv/config.js";
 
 // const APP_PORT=5000;
@@ -46,6 +47,7 @@ try {
   app.use("/api", productsRouters);
   app.use("/api", shoppingRouter);
   app.use("/api", pagoRouters);
+  app.use("/api", comentRoutes);
 
   connectDb();
 
