@@ -2,7 +2,7 @@ import Shoppings from "../models/shopping.models.js";
 import Pay from "../models/Pay.models.js";
 import SchemaPago from "../models/shopping.Pago.js";
 import SchemaProduct from "../models/ProductModel.js";
-import Especificaciones from "../models/EspecifcacionesModel1.js";
+import Especificaciones from "../models/EspecificacionesModel.js";
 import SchemaShoppings from "../models/shopping.models.js";
 
 // async function GetProductShoping(req, res) {

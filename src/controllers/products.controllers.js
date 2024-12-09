@@ -1,5 +1,5 @@
 import SchemaProduct from "../models/ProductModel.js";
-import Especificaciones from "../models/EspecifcacionesModel1.js  ";
+import Especificaciones from "../models/EspecificacionesModel.js";
 import  Shoppings  from "../models/shopping.models.js";
 
 

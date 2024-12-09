@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 // import productModel from '../models/ProductModel1.js';
 import productModel from "./ProductModel.js";
-import Especificaciones from "./EspecifcacionesModel1.js";
+import Especificaciones from "../models/EspecificacionesModel.js";
 
 mongoose.pluralize(null);
 
