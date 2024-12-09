@@ -12,11 +12,9 @@ import authRouters from "./routes/auth.routes.js";
 import favRouters from "./routes/fav.routes.js";
 import pagoRouters from "./routes/pago.routes.js";
 import productsRouters from "./routes/products.routes.js";
-
-
-import dotenv from 'dotenv';
-dotenv.config(); 
-import connect from './database/database';
+import comentRoutes from "./routes/coment.routes.js";
+import contactoRoutes from "./routes/contactoUser.routes.js";
+import "dotenv/config.js";
 
 
 const APP_PORT=3000;
@@ -52,12 +50,13 @@ try {
  app.use(express.urlencoded({ extended: true })); //Esta es una función de middleware incorporada en Express. Analiza las solicitudes entrantes. con cargas útiles codificadas en URL y se basa en body-parser .
  app.use(cookieParser());
 
- app.use("/api", authRouters);
- app.use("/api", favRouters);
- app.use( '/api' ,AdminRoutes );
- app.use("/api", productsRouters);
- app.use("/api", shoppingRouter);
- app.use("/api", pagoRouters);
+  app.use("/api", authRouters);
+  app.use("/api", favRouters);
+  app.use("/api", productsRouters);
+  app.use("/api", shoppingRouter);
+  app.use("/api", pagoRouters);
+  app.use("/api", comentRoutes);
+  app.use("/api", contactoRoutes);
 
  connectDb();
 
