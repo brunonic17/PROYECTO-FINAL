@@ -277,6 +277,7 @@ async function UpdatePicture(req, res) {
         res.status(500).send({ status: 'ERR', data: err.message });
     }
  };
+ 
 
 // Endpoint para Borrar objeto de Especificaciones
 async function DeleteEspecificaciones(req,res){
