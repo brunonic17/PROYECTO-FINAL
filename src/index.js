@@ -57,6 +57,7 @@ try {
   app.use("/api", pagoRouters);
   app.use("/api", comentRoutes);
   app.use("/api", contactoRoutes);
+  app.use( '/api' ,AdminRoutes );
 
  connectDb();
 
