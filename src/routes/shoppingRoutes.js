@@ -3,12 +3,12 @@ import {
   // GetProductShoping,
   PostProduct,
   PushProduct,
-  DeleteProduct,
+  // DeleteProduct,
   ConfirmaShopping,
   // CreateProducts,
   // CreateEspecificacioness,
   GetCompleteProduct,
-  GetProducts,
+  // GetProducts,
   GetShopingByIdUsu,
 } from "../controllers/ShoppingController.js";
 import { deleteShopping } from "../controllers/products.controllers.js";
@@ -26,7 +26,7 @@ router.post("/carrito", PostProduct);
 
 router.patch("/", PushProduct);
 
-router.delete("/carrito", DeleteProduct);
+// router.delete("/carrito", DeleteProduct);
 
 router.delete("/elimina/:id", deleteShopping);
 
@@ -34,7 +34,7 @@ router.post("/carrito/confirma", ConfirmaShopping);
 
 // router.post("/Admin", CreateProducts);
 
-router.get("/Admin", GetProducts);
+// router.get("/Admin", GetProducts);
 
 // router.post("/Admin/Especificaciones", CreateEspecificacioness);//no esta funcionando se creo una nueva ruta
 

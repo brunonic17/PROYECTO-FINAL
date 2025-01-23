@@ -229,7 +229,7 @@ async function PushProduct(req, res) {
 }
 
 //PARA ELIMINAR UN ARTICULO DE UN CARRITO EXISTENTE
-async function DeleteProduct(req, res) {
+async function DeleteProduct(req, res) {///no usar este endpoint
   try {
     const Product = { IdUsu: req.body.IdUsu, eid: req.body.eid };
 
@@ -429,12 +429,12 @@ async function GetCompleteProduct(req, res) {
 }
 
 // // Endpoint para obtener producto completo
-async function GetProducts(req, res) {
+async function GetProductss(req, res) {//no usar este enpoint
   const { IdProduct } = req.body;
   try {
     const Product = await SchemaProduct.findOne({ IdProduct: IdProduct });
 
-    res.status(200).send({ status: "OK", data: Product });
+    res.status(200).send({ status: "OK estoy acaaaa", data: Product });
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
@@ -448,6 +448,6 @@ export {
   CreateProducts,
   CreateEspecificacioness,
   GetCompleteProduct,
-  GetProducts,
+  GetProductss,
   GetShopingByIdUsu,
 };
