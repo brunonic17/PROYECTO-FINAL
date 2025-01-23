@@ -2,7 +2,7 @@ import Shoppings from "../models/shopping.models.js";
 import Pay from "../models/Pay.models.js";
 import SchemaPago from "../models/shopping.Pago.js";
 import SchemaProduct from "../models/ProductModel.js";
-import Especificaciones from "../models/EspecificacionesModel.js";
+import Especificacioness from "../models/EspecificacionesModel.js";
 import SchemaShoppings from "../models/shopping.models.js";
 
 // async function GetProductShoping(req, res) {
@@ -352,7 +352,7 @@ async function ConfirmaShopping(req, res) {
   }
 }
 
-// Endpoint para Crear productos
+// Endpoint para Crear productos (NO USAR BORRAR AL FINALIZAR EL PROYECTO)
 async function CreateProducts(req, res) {
   try {
     const {
@@ -383,7 +383,8 @@ async function CreateProducts(req, res) {
 }
 
 // Endpoint para Crear Especificaciones
-async function CreateEspecificaciones(req, res) {
+async function CreateEspecificacioness(req, res) {
+  console.log(req.body);
   try {
     const { Color, CodColor, Talle, Stock, Fecha, CodProducto, id } = req.body;
 
@@ -445,7 +446,7 @@ export {
   DeleteProduct,
   ConfirmaShopping,
   CreateProducts,
-  CreateEspecificaciones,
+  CreateEspecificacioness,
   GetCompleteProduct,
   GetProducts,
   GetShopingByIdUsu,

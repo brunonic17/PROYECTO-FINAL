@@ -5,8 +5,8 @@ import {
   PushProduct,
   DeleteProduct,
   ConfirmaShopping,
-  CreateProducts,
-  CreateEspecificaciones,
+  // CreateProducts,
+  // CreateEspecificacioness,
   GetCompleteProduct,
   GetProducts,
   GetShopingByIdUsu,
@@ -32,11 +32,11 @@ router.delete("/elimina/:id", deleteShopping);
 
 router.post("/carrito/confirma", ConfirmaShopping);
 
-router.post("/Admin", CreateProducts);
+// router.post("/Admin", CreateProducts);
 
 router.get("/Admin", GetProducts);
 
-router.post("/Admin/Especificaciones", CreateEspecificaciones);
+// router.post("/Admin/Especificaciones", CreateEspecificacioness);//no esta funcionando se creo una nueva ruta
 
 router.get("/Admin/Especificaciones", GetCompleteProduct);
 

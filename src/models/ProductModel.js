@@ -11,10 +11,10 @@ const SchemaPoduct = new mongoose.Schema({
     IdProduct: { type:'String', required: true },
     NombreProducto: { type: 'String', required: true },
     Precio: { type: 'number', required:true },
-    UltimoPrecio: { type:'String', default:'0' },
+    UltimoPrecio: { type:'number', default: 0 },
     Detalle: { type: 'String', required: true },
     Categoria:{ type: 'String', required: true },
-    UrlImagen:[{type: 'String'}],  // es un array de strings;
+    // UrlImagen:[{type: 'String'}],  // es un array de strings;
     Especificaciones:{type:[{id:mongoose.Schema.Types.ObjectId}], ref:'Especificaciones'}
    
     });
