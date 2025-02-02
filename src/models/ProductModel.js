@@ -6,12 +6,12 @@ mongoose.pluralize(null);
 const collection = "Products";
 
 const SchemaPoduct = new mongoose.Schema({
-  IdProduct: { type: "String", required: true },
-  NombreProducto: { type: "String", required: true },
-  Precio: { type: "number", required: true },
+  IdProduct: { type: "String" },
+  NombreProducto: { type: "String" },
+  Precio: { type: "number" },
   UltimoPrecio: { type: "number", default: 0 },
-  Detalle: { type: "String", required: true },
-  Categoria: { type: "String", required: true },
+  Detalle: { type: "String" },
+  Categoria: { type: "String" },
   UrlImagen: [
     { public_id: { type: "string" }, secure_url: { type: "string" } },
   ], // es un array de strings;

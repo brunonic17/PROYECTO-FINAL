@@ -13,10 +13,9 @@ import {CLOUDINARY_API_KEY,CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_SECRET} from ".
 
 //   Carga de imagenes a la nube creando su carpeta
  return await cloudinary.uploader.upload(filePath, {
-    folder: "replit"
+    folder: "ImagenesEcommerce"
   });
 
- 
 };
 
 export const deleteImage = async (publiId) => {
@@ -24,5 +23,4 @@ export const deleteImage = async (publiId) => {
    // Eliminacion de imagenes de la nube
  return await cloudinary.uploader.destroy(publiId);
 }
-
 

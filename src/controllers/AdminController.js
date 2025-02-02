@@ -2,8 +2,58 @@ import SchemaProduct from "../models/ProductModel.js";
 import Especificaciones from "../models/EspecificacionesModel.js";
 import { UploadPicture } from "./CloudinaryProductController.js";
 import { uploadImage, deleteImage } from "../utils/cloudinary.js";
-import fs from "fs-extra"
+import fs from "fs-extra";
 
+// Endpoint para crear todos los productos
+async function CreateProducts(req, res) {
+  //USANDO EL EDPOINT (22/01/25)
+  // try {
+
+  //   console.log(req.body)
+  //   console.log(req.files)
+  //   res.status(200).send({ status: "OK", data: req.files})
+  // } catch (error) {
+  //   console.log(error)
+  // }
+  try {
+    const {
+      IdProduct,
+      NombreProducto,
+      Precio,
+      Detalle,
+      UltimoPrecio,
+      Categoria,
+    } = req.body;
+
+    const NewProduct = await SchemaProduct.create({
+      IdProduct,
+      NombreProducto,
+      Precio,
+      Detalle,
+      UltimoPrecio,
+      Categoria,
+      Especificaciones: [],
+    });
+    if (req.files?.UrlImagen) {
+      const result = await uploadImage(req.files.UrlImagen.tempFilePath);
+      console.log(result)
+      NewProduct.UrlImagen = {
+        secure_url: result.secure_url,
+        public_id: result.public_id,
+      };
+      await fs.unlink(req.files.UrlImagen.tempFilePath);
+    }
+    await NewProduct.save();
+
+    res
+      .status(200)
+      .send({ status: " Ok, subiendo producto", data: NewProduct });
+
+    // }
+  } catch (err) {
+    res.status(500).send({ status: "ERR", data: err.message });
+  }
+}
 // Endpoint para obtener todos los productos
 async function GetProducts(req, res) {
   try {
@@ -88,51 +138,6 @@ async function GetCompleteProduct(req, res) {
 // }
 
 // Endpoint para Crear Especificaciones
-
-async function CreateProducts(req, res) {
-  //USANDO EL EDPOINT (22/01/25)
-  try {
-    const {
-      IdProduct,
-      NombreProducto,
-      Precio,
-      Detalle,
-      UltimoPrecio,
-      Categoria,
-    } = req.body;
-
-
-    const NewProduct = await SchemaProduct.create({
-      IdProduct,
-      NombreProducto,
-      Precio,
-      Detalle,
-      UltimoPrecio,
-      Categoria,
-      Especificaciones: [],
-    });
-    if (req.files?.UrlImagen) {
-      const result = await uploadImage(req.files.UrlImagen.tempFilePath);
-      NewProduct.UrlImagen = {
-        ...result,
-        secure_url: result.secure_url,
-        public_id: result.public_id,
-      };
-      await fs.unlink(req.files.UrlImagen.tempFilePath)
-    
-    }
-    await NewProduct.save();
-
-    res
-      .status(200)
-      .send({ status: " Ok, subiendo producto", data: NewProduct });
-
-    // }
-  } catch (err) {
-    res.status(500).send({ status: "ERR", data: err.message });
-  }
-}
-
 async function CreateEspecificaciones(req, res) {
   // console.log(req);
   try {
@@ -299,15 +304,14 @@ async function UpdatePicture(req, res) {
 // Endpoint para Borrar producto entero
 async function DeleteProduct(req, res) {
   try {
-   
     const id = req.body.id;
     const ProductDelete = await SchemaProduct.findByIdAndDelete(id);
     if (ProductDelete) {
-      await deleteImage(ProductDelete.UrlImagen[0].public_id)
+      await deleteImage(ProductDelete.UrlImagen[0].public_id);
       return res
         .status(200)
         .send({ status: "ok", data: "Se elimino el prducto" });
-    }//replit/znpyhz6o151wc4zh8mgw
+    } //replit/znpyhz6o151wc4zh8mgw
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
