@@ -7,14 +7,8 @@ import fs from "fs-extra";
 // Endpoint para crear todos los productos
 async function CreateProducts(req, res) {
   //USANDO EL EDPOINT (22/01/25)
-  // try {
-
-  //   console.log(req.body)
-  //   console.log(req.files)
-  //   res.status(200).send({ status: "OK", data: req.files})
-  // } catch (error) {
-  //   console.log(error)
-  // }
+  // console.log(req.files);
+  // console.log(req.body);
   try {
     const {
       IdProduct,
@@ -25,7 +19,7 @@ async function CreateProducts(req, res) {
       Categoria,
     } = req.body;
 
-    const NewProduct = await SchemaProduct.create({
+    const NewProduct = SchemaProduct({
       IdProduct,
       NombreProducto,
       Precio,
@@ -35,21 +29,19 @@ async function CreateProducts(req, res) {
       Especificaciones: [],
     });
     if (req.files?.UrlImagen) {
+      console.log(req.files.UrlImagen);
       const result = await uploadImage(req.files.UrlImagen.tempFilePath);
-      console.log(result)
+      // console.log(result);
       NewProduct.UrlImagen = {
         secure_url: result.secure_url,
         public_id: result.public_id,
       };
       await fs.unlink(req.files.UrlImagen.tempFilePath);
+      // }
     }
     await NewProduct.save();
-
-    res
-      .status(200)
-      .send({ status: " Ok, subiendo producto", data: NewProduct });
-
-    // }
+    // console.log(req.files);
+    res.status(200).send({ status: " Ok, subiendo producto" });
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
