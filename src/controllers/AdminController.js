@@ -240,12 +240,19 @@ async function UpdatePicture(req, res) {
   // console.log(picture);
 
     const result= await UploadPicture(picture);
-  // console.log(result);
+ 
 
       const secure_url = result.secure_url;
-     
+      const public_id=result.public_id;
+
+      const Img= new Object
+
+      Img.url=secure_url
+      Img._id=public_id
+
+      console.log(Img);
    const response = await SchemaProduct.findById(_id);
-   response.UrlImagen.push(secure_url);
+   response.UrlImagen.push(Img);
 
    const saveImage =await response.save();
 

@@ -14,7 +14,7 @@ const SchemaPoduct = new mongoose.Schema({
     UltimoPrecio: { type:'String', default:'0' },
     Detalle: { type: 'String', required: true },
     Categoria:{ type: 'String', required: true },
-    UrlImagen:[{type: 'String'}],  // es un array de strings;
+    UrlImagen:[{type: 'Object'}],  
     Especificaciones:{type:[{id:mongoose.Schema.Types.ObjectId}], ref:'Especificaciones'}
    
     });
