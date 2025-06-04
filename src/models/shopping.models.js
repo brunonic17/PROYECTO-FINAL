@@ -18,7 +18,7 @@ const SchemaShoppings = new mongoose.Schema({
         eid: mongoose.Schema.Types.ObjectId,
         IdProductCarro: { type: "number" },
         IdArtCarro: Number,
-        CantProduct: Number,
+        cantidad: Number,
       },
     ],
     ref: "products",

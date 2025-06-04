@@ -3,7 +3,7 @@ import {
   // GetProductShoping,
   PostProduct,
   PushProduct,
-  // DeleteProduct,
+  DeleteProduct,
   ConfirmaShopping,
   // CreateProducts,
   // CreateEspecificacioness,
@@ -11,6 +11,7 @@ import {
   // GetProducts,
   GetShopingByIdUsu,
 } from "../controllers/ShoppingController.js";
+import { createOrder } from "../controllers/pago.controllers.js";
 import { deleteShopping } from "../controllers/products.controllers.js";
 import { authRequired } from "../middelwares/validateToken.js";
 
@@ -26,11 +27,11 @@ router.post("/carrito", PostProduct);
 
 router.patch("/", PushProduct);
 
-// router.delete("/carrito", DeleteProduct);
+router.delete("/carrito", DeleteProduct);
 
 router.delete("/elimina/:id", deleteShopping);
 
-router.post("/carrito/confirma", ConfirmaShopping);
+router.post("/carrito/confirma", ConfirmaShopping ); // segunda opcion para los pagos del product
 
 // router.post("/Admin", CreateProducts);
 

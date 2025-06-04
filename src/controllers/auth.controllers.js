@@ -191,7 +191,7 @@ export const updatePassword = async (req, res) => {
         userFound.save();
 
         res.status(200).json({
-          Status: "Success",
+          status: "Success",
           User: userFound.email,
           msg: "password modificado",
         });

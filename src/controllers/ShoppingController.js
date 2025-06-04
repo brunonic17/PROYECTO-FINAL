@@ -2,7 +2,7 @@ import Shoppings from "../models/shopping.models.js";
 import Pay from "../models/Pay.models.js";
 import SchemaPago from "../models/shopping.Pago.js";
 import SchemaProduct from "../models/ProductModel.js";
-import Especificacioness from "../models/EspecificacionesModel.js";
+import Especificaciones from "../models/EspecificacionesModel.js";
 import SchemaShoppings from "../models/shopping.models.js";
 
 // async function GetProductShoping(req, res) {
@@ -59,7 +59,7 @@ import SchemaShoppings from "../models/shopping.models.js";
 //   }
 // };
 
-//BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA-
+//BUSCA SI EXISTE CARRITO DEL USUARIO Y LO LISTA- (FUNCIONANDO)
 
 async function GetShopingByIdUsu(req, res) {
   try {
@@ -79,31 +79,21 @@ async function GetShopingByIdUsu(req, res) {
   }
 }
 
-//CREA - AGREGA PRODUCTOS - MODIFICA LA CANTIDAD DE UN PRODUCTO EN UN CARRITO PARA UN USUARIO
+//CREA - AGREGA PRODUCTOS - MODIFICA LA CANTIDAD DE UN PRODUCTO EN UN CARRITO PARA UN USUARIO (FUNCIONANDO)
 async function PostProduct(req, res) {
   try {
-    // console.log(req.body);
-    const Parametros = {
-      IdUsu: req.body.IdUsu,
-      CantProduct: req.body.cantidad,
-      FechaCarro: req.body.FechaCarro,
-      IdProduct: req.body.IdProduct,
-      eid: req.body.eid,
-    };
-    const IdUsu = Parametros.IdUsu;
-    const CantProduct = Parametros.CantProduct;
-    const FechaCarro = Parametros.FechaCarro;
-    const IdProduct = Parametros.IdProduct;
-    const eid = Parametros.eid;
-    console.log(CantProduct);
+    const { IdProduct, IdUsu, cantidad, color, eid } = req.body;
+    console.log(req.body);
     const Cart = await Shoppings.findOne({ IdUsu: IdUsu });
+
     const Product = await SchemaProduct.findOne({ IdProduct: IdProduct });
+
     const Especi = await Especificaciones.findById(eid);
-    console.log(Especi);
     const pid = Product._id;
     const IdArtCarro = Especi.CodArt;
+    // console.log(Especi);
     // CONSULTO SI EL STOCK ES SUFICIENTE PARA LA CANTIDAD INGRESADA
-    if (Especi.Stock >= CantProduct) {
+    if (Especi.Stock >= cantidad) {
       // STOCK SUFICIENTE
       const IdProductCarro = IdProduct;
 
@@ -113,16 +103,19 @@ async function PostProduct(req, res) {
         const cid = Cart._id;
         const CC = Cart.DetalleCarro.find((elemento) => {
           return elemento.eid._id == eid;
+          // console.log(elemento.eid._id == eid);
         });
+
         //BUSCO SI YA EXISTE EL ARTICULO EN EL CARRITO
         if (CC != undefined) {
           //MODIFICA LA CANTIDAD DEL ARTICULO EXISTENTE EN EL CARRITO
 
           const modific = await Shoppings.updateOne(
             { _id: cid, "DetalleCarro._id": CC._id },
-            { $set: { "DetalleCarro.$.CantProduct": CantProduct } },
+            { $set: { "DetalleCarro.$.cantidad": cantidad } },
             { arrayFilters: [{ "DetalleCarro.pid": pid }] }
           );
+
           res
             .status(200)
             .send({ status: "ok", data: await Shoppings.findById(cid) });
@@ -138,11 +131,12 @@ async function PostProduct(req, res) {
                   eid,
                   IdProductCarro,
                   IdArtCarro,
-                  CantProduct,
+                  cantidad,
                 },
               },
             }
           );
+
           res
             .status(200)
             .send({ status: "ok", data: await Shoppings.findById(cid) });
@@ -156,7 +150,7 @@ async function PostProduct(req, res) {
           eid,
           IdProductCarro,
           IdArtCarro,
-          CantProduct,
+          cantidad,
         });
 
         await modific.save();
@@ -173,7 +167,7 @@ async function PostProduct(req, res) {
   }
 }
 
-// PARA AGREGAR ARTICULOS AL CARRITO EXISTENTE DE UN USUARIO
+// PARA AGREGAR ARTICULOS AL CARRITO EXISTENTE DE UN USUARIO (SIN USAR)
 async function PushProduct(req, res) {
   //   try {
   //       const {CantProduct, IdProduct, IdUsu} = req.body;
@@ -228,8 +222,9 @@ async function PushProduct(req, res) {
   //   }
 }
 
-//PARA ELIMINAR UN ARTICULO DE UN CARRITO EXISTENTE
-async function DeleteProduct(req, res) {///no usar este endpoint
+//PARA ELIMINAR UN ARTICULO DE UN CARRITO EXISTENTE (FUNCIONANDO)
+async function DeleteProduct(req, res) {
+  console.log(req.body, "SOY YO ELIMINADO DESDE EL CARRITO");
   try {
     const Product = { IdUsu: req.body.IdUsu, eid: req.body.eid };
 
@@ -238,17 +233,17 @@ async function DeleteProduct(req, res) {///no usar este endpoint
     console.log(Product);
     const Cart = await Shoppings.findOne({ IdUsu: IdUsu });
     const cid = Cart._id;
-
+    console.log(cid);
     const CC = Cart.DetalleCarro.find((elemento) => {
       return elemento.eid._id == eid;
     });
-    console.log(CC, "sou yo");
 
     const modifica = await Shoppings.updateOne(
       { _id: cid, "DetalleCarro.eid": eid },
       { $pull: { DetalleCarro: { eid } } },
       { arrayFilters: [{ "DetalleCarro.pid": eid }] }
     );
+    console.log(modifica);
 
     res
       .status(200)
@@ -274,20 +269,17 @@ async function DeleteProduct(req, res) {///no usar este endpoint
 //PARA CONFIRMAR EL CARRITO EXISTENTE
 async function ConfirmaShopping(req, res) {
   try {
-    console.log(req.body);
+    console.log(req.body, "SOY YO el confirma shopping");
     const PayShopping = {
       cid: req.body.cid,
-
-      TipoPagoPay: req.body.TipoPagoPay,
       TotalCarro: req.body.TotalCarro,
     };
 
     const cid = PayShopping.cid;
-
-    const TipoPagoPay = PayShopping.TipoPagoPay;
     const TotalCarro = PayShopping.TotalCarro;
 
     const BackShopping = await Shoppings.findById(cid);
+    console.log(BackShopping, "soy el BackShopping");
 
     if (BackShopping) {
       const IdUsu = BackShopping.IdUsu;
@@ -301,7 +293,6 @@ async function ConfirmaShopping(req, res) {
       const newCarrito = await Pay.create({
         IdUsu,
         TotalPay: TotalCarro,
-        TipoPagoPay,
         DetallePay: [],
       });
       for (let i = 0; i < BackDetalleCarro.length; i++) {
@@ -310,37 +301,38 @@ async function ConfirmaShopping(req, res) {
         const Product = await SchemaProduct.findOne({
           IdProduct: element.pid.IdProduct,
         });
-        console.log(Product);
+        console.log(Product, "soy el proudcto del carrito");
         const Especi = await Especificaciones.findById(eid);
 
         newCarrito2.DetalleCarro.push({
           pid: element.pid,
           eid: element.eid,
           IdProductCarro: Product.IdProduct,
-          CantProduct: element.CantProduct,
-          ParcialProduct: Product.Precio * element.CantProduct,
+          CantProduct: element.cantidad,
+          ParcialProduct: Product.Precio * element.cantidad,
         });
 
         newCarrito.DetallePay.push({
           IdProductCarro: Product.IdProduct,
           PcioCarro: Product.Precio,
-          CantProduct: element.CantProduct,
-          ParcialCarro: Product.Precio * element.CantProduct,
+          CantProduct: element.cantidad,
+          ParcialCarro: Product.Precio * element.cantidad,
           NomArtCarro: Product.NombreProducto,
           TalleCarro: Especi.Talle,
           ColorCarro: Especi.Color,
         });
-        const NewStock = Especi.Stock - element.CantProduct;
+        const NewStock = Especi.Stock - element.cantidad;
         await Especificaciones.findOneAndUpdate(eid, { Stock: NewStock });
       }
 
       await newCarrito.save();
       await newCarrito2.save();
 
-      // const dele = await Shoppings.findByIdAndDelete(cid)
-      return res.status(200).json({
+      // const dele = await Shoppings.findByIdAndDelete(cid);
+      res.status(200).json({
         ok: true,
         data: newCarrito,
+        message: "se aprobo la compra del carrito",
       });
     } else {
       res
@@ -353,37 +345,37 @@ async function ConfirmaShopping(req, res) {
 }
 
 // Endpoint para Crear productos (NO USAR BORRAR AL FINALIZAR EL PROYECTO)
-async function CreateProducts(req, res) {
-  try {
-    const {
-      IdProduct,
-      NombreProducto,
-      Precio,
-      Detalle,
-      UltimoPrecio,
-      Categoria,
-    } = req.body;
+// async function CreateProducts(req, res) {
+//   try {
+//     const {
+//       IdProduct,
+//       NombreProducto,
+//       Precio,
+//       Detalle,
+//       UltimoPrecio,
+//       Categoria,
+//     } = req.body;
 
-    const NewProduct = await SchemaProduct.create({
-      IdProduct,
-      NombreProducto,
-      Precio,
-      Detalle,
-      UltimoPrecio,
-      Categoria,
-      Especificaciones: [],
-    });
+//     const NewProduct = await SchemaProduct.create({
+//       IdProduct,
+//       NombreProducto,
+//       Precio,
+//       Detalle,
+//       UltimoPrecio,
+//       Categoria,
+//       Especificaciones: [],
+//     });
 
-    if (NewProduct) {
-      res.status(200).send({ status: "OK", data: NewProduct });
-    }
-  } catch (err) {
-    res.status(500).send({ status: "ERR", data: err.message });
-  }
-}
+//     if (NewProduct) {
+//       res.status(200).send({ status: "OK", data: NewProduct });
+//     }
+//   } catch (err) {
+//     res.status(500).send({ status: "ERR", data: err.message });
+//   }
+// }
 
 // Endpoint para Crear Especificaciones
-async function CreateEspecificacioness(req, res) {
+async function Create(req, res) {
   console.log(req.body);
   try {
     const { Color, CodColor, Talle, Stock, Fecha, CodProducto, id } = req.body;
@@ -429,7 +421,8 @@ async function GetCompleteProduct(req, res) {
 }
 
 // // Endpoint para obtener producto completo
-async function GetProductss(req, res) {//no usar este enpoint
+async function GetProductss(req, res) {
+  //no usar este enpoint
   const { IdProduct } = req.body;
   try {
     const Product = await SchemaProduct.findOne({ IdProduct: IdProduct });
@@ -445,8 +438,8 @@ export {
   PushProduct,
   DeleteProduct,
   ConfirmaShopping,
-  CreateProducts,
-  CreateEspecificacioness,
+  // CreateProducts,
+  // CreateEspecificacioness,
   GetCompleteProduct,
   GetProductss,
   GetShopingByIdUsu,

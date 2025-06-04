@@ -10,7 +10,8 @@ import {GetProducts,
   UpdatePicture,
   DeleteProduct,
   DeleteEspecificaciones,
-  DeleteImage      
+  DeleteImage,      
+  AddImagesProduct
   }  from '../controllers/AdminController.js';
 
 
@@ -24,6 +25,7 @@ router.get('/Admin/:id',GetProduct);
 router.get('/Admin',GetProducts);
 router.post('/Admin/Product',GetCompleteProduct)
 router.post('/Admin/Crea',CreateProducts);
+router.post('/Admin/AddImg', AddImagesProduct);
 router.post('/Admin/Especificaciones',CreateEspecificaciones);
 router.put('/Admin/Especificaciones',UploadEspecificaciones);
 router.put('/Admin/Product',UpdateProduct);

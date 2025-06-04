@@ -54,14 +54,16 @@ export const GetEspecificaiones = async (req, res) => {
     res.status(500).send({ status: "ERR", data: err.message });
   }
 };
+//ELIMINA EL CARRITO DEL USUARIO (FUNCIONANDO)
 export const deleteShopping = async (req, res) => {
-  // console.log(req.params.id);
+  console.log(req.params.id);
   try {
     const deleteShopping= await Shoppings.findOneAndDelete({product:req.params.id});
-    if (!deleteShopping)
-      return res
-        .status(404)
-        .json({ message: "el producto ya no se encuentra" });
+    console.log(deleteShopping)
+    // if (!deleteShopping)
+    //   // return res
+    //   //   .status(404)
+    //   //   .json({ message: "el producto ya no se encuentra" });
 
     return res.sendStatus(204);
     //todo estubo bien no te voy a devolver nada

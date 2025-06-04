@@ -1,14 +1,11 @@
 import SchemaProduct from "../models/ProductModel.js";
 import Especificaciones from "../models/EspecificacionesModel.js";
-import { UploadPicture } from "./CloudinaryProductController.js";
+// import { UploadPicture } from "./CloudinaryProductController.js";
 import { uploadImage, deleteImage } from "../utils/cloudinary.js";
 import fs from "fs-extra";
 
-// Endpoint para crear todos los productos
+// Endpoint para crear todos los productos (FUNCIONANDO)
 async function CreateProducts(req, res) {
-  //USANDO EL EDPOINT (22/01/25)
-  // console.log(req.files);
-  // console.log(req.body);
   try {
     const {
       IdProduct,
@@ -46,6 +43,31 @@ async function CreateProducts(req, res) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
 }
+// Enpoint para agregar imagenes al producto
+
+async function AddImagesProduct(req, res) {
+  try {
+    // const { id } = req.params;
+    const { _id } = req.body;
+    console.log(req.body._id);
+
+    const Product = await SchemaProduct.findById(_id);
+    if (req.files?.UrlImagen) {
+      console.log(req.files.UrlImagen);
+      const result = await uploadImage(req.files.UrlImagen.tempFilePath);
+      Product.UrlImagen.push({
+        secure_url: result.secure_url,
+        public_id: result.public_id,
+      });
+      await fs.unlink(req.files.UrlImagen.tempFilePath);
+    }
+    await Product.save();
+    res.status(200).send({ status: "OK", data: Product });
+  } catch (err) {
+    res.status(500).send({ status: "ERR", data: err.message });
+  }
+}
+
 // Endpoint para obtener todos los productos
 async function GetProducts(req, res) {
   try {
@@ -87,7 +109,6 @@ async function GetCompleteProduct(req, res) {
   }
 }
 
-// Endpoint para Crear productos
 // async function CreateProducts(req, res) {
 //   try {
 //     // const { IdProduct,NombreProducto,Precio,Detalle,UltimoPrecio,Categoria}= req.body;
@@ -220,43 +241,24 @@ async function UploadEspecificaciones(req, res) {
 
 // Endpoint para Modificar Product
 async function UpdateProduct(req, res) {
+  const { id } = req.body;
   try {
-    const New = {
-      NombreProducto: req.body.NombreProducto,
-      Precio: req.body.Precio,
-      Detalle: req.body.Detalle,
-      UltimoPrecio: req.body.UltimoPrecio,
-      id: req.body.id,
-    };
-
-    const NombreProducto = New.NombreProducto;
-    const Precio = New.Precio;
-    const Detalle = New.Detalle;
-    const UltimoPrecio = New.UltimoPrecio;
-    const id = New.id;
-
-    const response = await SchemaProduct.findByIdAndUpdate(
+    const product = await SchemaProduct.findByIdAndUpdate(
       id,
-      {
-        NombreProducto: NombreProducto,
-        Precio: Precio,
-        Detalle: Detalle,
-        UltimoPrecio: UltimoPrecio,
-      },
+
+      req.body,
       { new: true }
     );
 
-    if (response) {
+    if (product) {
       res.status(200).json({
         ok: true,
-        data: response,
+        data: product,
       });
     }
+    await product.save();
   } catch (ex) {
-    return res.status(400).json({
-      ok: false,
-      err: ex.message,
-    });
+    return res.status(400).json({ error: "Producto no encontrado" });
   }
 }
 
@@ -340,7 +342,7 @@ async function DeleteImage(req, res) {
 
     const DeleteEspecificaciones = await SchemaProduct.findById(id);
 
-    DeleteEspecificaciones.UrlImagen.pull(id2);
+    DeleteEspecificaciones.UrlImagen.pull;
 
     await DeleteEspecificaciones.save();
 
@@ -361,4 +363,5 @@ export {
   DeleteProduct,
   DeleteEspecificaciones,
   DeleteImage,
+  AddImagesProduct,
 };
