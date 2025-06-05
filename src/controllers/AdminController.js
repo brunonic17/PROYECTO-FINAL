@@ -297,11 +297,13 @@ async function UpdatePicture(req, res) {
 
 // Endpoint para Borrar producto entero
 async function DeleteProduct(req, res) {
+  const { id } = req.params;
+
   try {
-    const id = req.body.id;
     const ProductDelete = await SchemaProduct.findByIdAndDelete(id);
     if (ProductDelete) {
-      await deleteImage(ProductDelete.UrlImagen[0].public_id);
+      // await deleteImage(ProductDelete);
+
       return res
         .status(200)
         .send({ status: "ok", data: "Se elimino el prducto" });
