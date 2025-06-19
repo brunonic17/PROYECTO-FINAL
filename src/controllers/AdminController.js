@@ -6,6 +6,7 @@ import fs from "fs-extra";
 
 // Endpoint para crear todos los productos (FUNCIONANDO)
 async function CreateProducts(req, res) {
+  console.log(req.body);
   try {
     const {
       IdProduct,

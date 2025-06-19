@@ -18,7 +18,7 @@ import { authRequired } from "../middelwares/validateToken.js";
 const router = Router();
 
 // router.get('/:id', GetProductShoping)
-// RUTA QUYE LLEVA AL FRONT LOS PRODUCTOS DEL CARRITO
+// RUTA QUE LLEVA AL FRONT LOS PRODUCTOS DEL CARRITO
 router.get("/carritos",authRequired, GetShopingByIdUsu);
 
 router.post("/carrito", PostProduct);
