@@ -1,6 +1,6 @@
 import SchemaProduct from '../models/ProductModel.js';
 import Especificaciones from '../models/EspecificacionesModel.js';
-import { UploadPicture } from './CloudinaryProductController.js';
+import { UploadPicture,DeletePicture } from './CloudinaryProductController.js';
 
 
 // Endpoint para obtener todos los productos
@@ -294,9 +294,9 @@ async function DeleteEspecificaciones(req,res){
       const id2=Delete.id2;
 
           const DeleteEspecificaciones= await Especificaciones.findByIdAndDelete(id2);
-          await SchemaProduct.findByIdAndUpdate(id,{$pull:{Especificaciones:{id:{_id:id2}}}});
+         const result=await SchemaProduct.findByIdAndUpdate(id,{$pull:{Especificaciones:{id:{_id:id2}}}});
        if(DeleteEspecificaciones){
-            res.status(200).send({status:'ok', data: "Se Elimino" })}
+            res.status(200).send({status:'ok', data: result + "Se Elimino" })}
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
@@ -306,19 +306,18 @@ async function DeleteEspecificaciones(req,res){
 // Endpoint para Borrar objeto de Especificaciones
 async function DeleteImage(req,res){
   try {
-    const Delete= {id,
-      id2 } ;
-
+    const Delete= req.body
       const id=Delete.id;
       const id2=Delete.id2;
 
-          const DeleteEspecificaciones= await SchemaProduct.findById(id);
+        
+          const result= await DeletePicture (id2);
+          const oneresult=await SchemaProduct.findByIdAndUpdate(id,
+            {$pull:{UrlImagen:{_id:id2}}}
+          );
+      
           
-          DeleteEspecificaciones.UrlImagen.pull(id2)
-
-          await  DeleteEspecificaciones.save();
- 
-    res.status(200).send({status:'ok', data: "Se Elimino" })
+    res.status(200).send({status:'ok', data:oneresult })
   } catch (err) {
     res.status(500).send({ status: "ERR", data: err.message });
   }

@@ -16,7 +16,18 @@ function ConectCloudinary (CloudN,ApiK,ApiS){
            });
    
     return result
-  }
+  };
+
+  function DeletePicture(req,res){
+    const _id=req;
+    
+    const result= cloudinary.uploader.destroy(_id);
+
+return result
+}
+
+
 
   export{UploadPicture,
-ConectCloudinary};
+        ConectCloudinary,
+        DeletePicture};
