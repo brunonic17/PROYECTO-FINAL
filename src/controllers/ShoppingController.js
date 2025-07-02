@@ -68,12 +68,13 @@ async function GetShopingByIdUsu(req, res) {
     if (Cart) {
       res.status(200).json(Cart);
       // res.status(200).json({ status: "OK", data: Cart });
-    } else {
-      res.status(400).send({
-        status: "ERR",
-        data: "CUIDADO No Existe Carrito para este Usuario",
-      });
-    }
+    } 
+    // else {
+    //   res.status(400).send({
+    //     status: "ERR",
+    //     data: "CUIDADO No Existe Carrito para este Usuario",
+    //   });
+    // }
   } catch (err) {
     res.status(400).send({ status: "ERR", data: err.message });
   }

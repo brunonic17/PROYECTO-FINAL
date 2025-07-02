@@ -27,13 +27,14 @@ export const createOrder = async (req, res) => {
         },
       ],
       back_urls: {
-        success: "https://www.youtube.com/watch?v=Gykudr8IAfc",
+        success: " https://cdc1-186-124-62-229.ngrok-free.app/api/5173",
         failure: "https://www.youtube.com/watch?v=Gykudr8IAfc",
         pending: "https://www.youtube.com/watch?v=Gykudr8IAfc",
       },
       auto_return: "approved",
       notification_url:
-        "https://e7bc-181-84-160-118.ngrok-free.app/api/webhook",
+      //Cargar la nueva ruta de ngrok al levantar el servidor
+        "https://9ffe-186-124-62-229.ngrok-free.app/api/webhook",
     };
     //PIDIENDO UNA ORDEN DE COMPRA
     // const result = await mercadopago.preferences.create(preference);

@@ -79,7 +79,7 @@ async function GetProducts(req, res) {
     res.status(500).send({ status: "ERR", data: err.message });
   }
 }
-// Endpoint para obtener todos los productos
+// Endpoint para obtener un producto
 async function GetProduct(req, res) {
   try {
     const { id } = req.params;
@@ -303,7 +303,7 @@ async function DeleteProduct(req, res) {
   try {
     const ProductDelete = await SchemaProduct.findByIdAndDelete(id);
     if (ProductDelete) {
-      // await deleteImage(ProductDelete);
+      await deleteImage(ProductDelete);
 
       return res
         .status(200)
